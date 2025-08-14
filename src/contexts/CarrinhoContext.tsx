@@ -41,7 +41,7 @@ export const CarrinhoProvider = ({ children }: { children: ReactNode }) => {
 export const useCarrinho = (): CarrinhoContextType => {
   const context = useContext(CarrinhoContext);
     if (!context) {
-        throw new Error('useCarrinho must be used within a CarrinhoProvider');
+        throw new Error('useCarrinho deve ser usado dentro de um CarrinhoProvider');
     }
     return context;
 };
