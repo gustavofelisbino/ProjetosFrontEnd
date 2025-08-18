@@ -1,4 +1,5 @@
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer, useEffect, Component } from "react";
+import type { ErrorInfo, ReactNode } from "react";
 import { CarrinhoProvider, useCarrinho } from "../../contexts/CarrinhoContext";
 import {
   Box,
@@ -11,8 +12,8 @@ import {
 } from "@mui/material";
 import AppBar from "../../components/AppBar";
 import Theme from "../../themes";
-
-const frutas = ["Banana", "Maçã", "Laranja", "Uva"];
+import { useFrutas } from "../../contexts/FrutasContext";
+import type { Fruta } from "../../contexts/FrutasContext";
 
 interface IState {
   count: number;
@@ -105,13 +106,23 @@ const CarrinhoItens: React.FC<{ mostrar: boolean }> = ({ mostrar }) => {
 };
 
 const AppInterno: React.FC = () => {
-  const [frutaAtual, setFrutaAtual] = useState(frutas[0]);
+  const { frutas } = useFrutas();
+  const [frutaAtual, setFrutaAtual] = useState<Fruta | null>(null);
   const [state, dispatch] = useReducer(contadorReducer, { count: 0 });
   const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
 
+  useEffect(() => {
+    if (frutas.length > 0 && !frutaAtual) {
+      setFrutaAtual(frutas[0]);
+    }
+  }, [frutas, frutaAtual]);
+
   const handleTrocarFruta = () => {
-    const proximaIndex = (frutas.indexOf(frutaAtual) + 1) % frutas.length;
-    setFrutaAtual(frutas[proximaIndex]);
+    if (frutaAtual && frutas.length > 0) {
+      const currentIndex = frutas.findIndex(f => f.id === frutaAtual.id);
+      const nextIndex = (currentIndex + 1) % frutas.length;
+      setFrutaAtual(frutas[nextIndex]);
+    }
   };
 
   useEffect(() => {
@@ -150,8 +161,12 @@ const AppInterno: React.FC = () => {
           {state.count}
         </Typography>
 
-        <Typography variant="h5">{frutaAtual}</Typography>
-        <FrutasActions frutaAtual={frutaAtual} onTrocar={handleTrocarFruta} />
+        {frutaAtual && (
+          <>
+            <Typography variant="h5">{frutaAtual.fruta} - R$ {frutaAtual.valor.toFixed(2)}</Typography>
+            <FrutasActions frutaAtual={frutaAtual.fruta} onTrocar={handleTrocarFruta} />
+          </>
+        )}
 
         <CarrinhoItens mostrar={mostrarCarrinho} />
       </Paper>
@@ -159,11 +174,62 @@ const AppInterno: React.FC = () => {
   );
 };
 
+interface ErrorBoundaryProps {
+  children: ReactNode;
+}
+
+interface ErrorBoundaryState {
+  hasError: boolean;
+  error: Error | null;
+}
+
+class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
+  public state: ErrorBoundaryState = {
+    hasError: false,
+    error: null
+  };
+
+  public static getDerivedStateFromError(error: Error): ErrorBoundaryState {
+    return { hasError: true, error };
+  }
+
+  public componentDidCatch(error: Error, errorInfo: ErrorInfo) {
+    console.error("Uncaught error:", error, errorInfo);
+  }
+
+  public render() {
+    if (this.state.hasError) {
+      return (
+        <Box sx={{ p: 3, textAlign: 'center' }}>
+          <Typography variant="h5" color="error" gutterBottom>
+            Ocorreu um erro inesperado
+          </Typography>
+          <Typography variant="body1" color="textSecondary">
+            {this.state.error?.message || 'Por favor, recarregue a página e tente novamente.'}
+          </Typography>
+          <Button 
+            variant="contained" 
+            color="primary" 
+            onClick={() => window.location.reload()}
+            sx={{ mt: 2 }}
+          >
+            Recarregar Página
+          </Button>
+        </Box>
+      );
+    }
+
+    return this.props.children;
+  }
+}
+
 const App: React.FC = () => (
   <ThemeProvider theme={Theme}>
     <AppBar />
     <CarrinhoProvider>
-      <AppInterno />
+      <ErrorBoundary>
+        <AppInterno />
+      </ErrorBoundary>
     </CarrinhoProvider>
   </ThemeProvider>
 );
