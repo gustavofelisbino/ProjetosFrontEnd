@@ -11,7 +11,7 @@ import {
   ThemeProvider,
 } from "@mui/material";
 import AppBar from "../../components/AppBar";
-import Theme from "../../themes";
+import { theme } from "../../themes";
 import { useFrutas } from "../../contexts/FrutasContext";
 import type { Fruta } from "../../contexts/FrutasContext";
 
@@ -139,7 +139,7 @@ const AppInterno: React.FC = () => {
           alignItems: "center",
           gap: 3,
           width: "60%",
-          bgcolor: "secondary.main",
+          bgcolor: "grey.50",
         }}
       >
         <CarrinhoToggle onToggle={() => setMostrarCarrinho((prev) => !prev)} />
@@ -224,8 +224,8 @@ class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundaryState> {
 }
 
 const App: React.FC = () => (
-  <ThemeProvider theme={Theme}>
-    <AppBar />
+  <ThemeProvider theme={theme}>
+    <AppBar color="primary" />
     <CarrinhoProvider>
       <ErrorBoundary>
         <AppInterno />

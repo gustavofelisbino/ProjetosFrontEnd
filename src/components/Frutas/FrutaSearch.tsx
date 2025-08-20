@@ -1,26 +1,40 @@
 import { Box, InputBase } from '@mui/material';
-import { Search as SearchIcon } from '@mui/icons-material';
+import SearchIcon from '@mui/icons-material/Search';
 
 interface FrutaSearchProps {
   searchTerm: string;
-  onSearchChange: (value: string) => void;
+  onSearchChange: (term: string) => void;
 }
 
-export function FrutaSearch({ searchTerm, onSearchChange }: FrutaSearchProps) {
+export default function FrutaSearch({ searchTerm, onSearchChange }: FrutaSearchProps) {
   return (
     <Box sx={{ 
       display: 'flex', 
       alignItems: 'center',
       backgroundColor: 'rgba(0, 0, 0, 0.05)',
       borderRadius: 1,
-      padding: '0 8px',
+      padding: '4px 12px',
+      minWidth: '300px',
+      '&:hover': {
+        backgroundColor: 'rgba(0, 0, 0, 0.08)',
+      },
+      '&:focus-within': {
+        boxShadow: '0 0 0 2px rgba(25, 118, 210, 0.2)',
+        backgroundColor: 'white',
+      },
+      transition: 'all 0.2s ease-in-out',
     }}>
-      <SearchIcon sx={{ color: 'text.secondary', marginRight: 1 }} />
+      <SearchIcon sx={{ color: 'text.secondary', marginRight: 1, fontSize: 20 }} />
       <InputBase
-        placeholder="Procurar fruta..."
+        placeholder="Pesquisar frutas..."
         value={searchTerm}
         onChange={(e) => onSearchChange(e.target.value)}
-        sx={{ width: '60%'}}
+        sx={{ 
+          width: '100%',
+          '& .MuiInputBase-input': {
+            padding: '4px 0',
+          },
+        }}
       />
     </Box>
   );

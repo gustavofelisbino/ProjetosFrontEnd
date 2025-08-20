@@ -1,9 +1,8 @@
 import React, { useState } from "react";
 import { Box, Slide } from "@mui/material";
-import AssignmentIcon from '@mui/icons-material/Assignment';
-import GroupsIcon from '@mui/icons-material/Groups';
 import SidebarButton from "../SidebarButton";
 import { useNavigate } from "react-router-dom";
+import { HomeOutlined as HomeIcon, AssignmentOutlined as AssignmentIcon, GroupsOutlined as GroupsIcon } from "@mui/icons-material";
 
 type SidebarUnderHeaderProps = {
   open: boolean;
@@ -41,7 +40,7 @@ const SidebarUnderHeader: React.FC<SidebarUnderHeaderProps> = ({
         }}
       >
         <SidebarButton 
-          icon={<img src={"InicioIcon"} />} 
+          icon={<HomeIcon sx={{ color: "#9C27B0" }} />} 
           text="Inicio"
           onClick={() => {
             handleSelect("Inicio");

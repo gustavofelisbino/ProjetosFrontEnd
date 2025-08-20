@@ -102,8 +102,6 @@ export function FrutaList({ frutas, onEdit, onDelete, loading = false }: FrutaLi
             alignItems: 'center',
             justifyContent: 'center',
           },
-          alignContent: 'center',
-          justifyContent: 'center',
         }}
       />
     </Box>

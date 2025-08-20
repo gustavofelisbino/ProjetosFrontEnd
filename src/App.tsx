@@ -1,13 +1,13 @@
 import { BrowserRouter } from 'react-router-dom';
 import { AppRoutes } from './routes';
 import { ThemeProvider } from '@mui/material/styles';
-import { Theme } from './themes';
+import { theme } from './themes';
 import { FrutasProvider } from './contexts/FrutasContext';
 
 export const App = () => {
   return (
     <BrowserRouter>
-      <ThemeProvider theme={Theme}>
+      <ThemeProvider theme={theme}>
         <FrutasProvider>
           <AppRoutes />
         </FrutasProvider>

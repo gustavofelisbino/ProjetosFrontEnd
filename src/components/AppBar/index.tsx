@@ -1,7 +1,8 @@
 import * as React from "react";
 import { styled, alpha } from "@mui/material/styles";
+import type { AppBarProps as MuiAppBarProps } from "@mui/material";
 import {
-  AppBar,
+  AppBar as MuiAppBar,
   Box,
   Toolbar,
   IconButton,
@@ -27,7 +28,7 @@ import {
 } from "@mui/icons-material";
 
 import { ThemeProvider } from "@mui/material/styles";
-import { Theme } from "../../themes";
+import { theme } from "../../themes";
 import AvatarHeaderInicio from "./AvatarHeader";
 import CustomIconButtonHeaderInicio from "./CustomIconButtonHeaderInicio";
 import SidebarUnderHeader from "./SidebarUnderHeader";
@@ -72,7 +73,10 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
   },
 }));
 
-export default function PrimarySearchAppBar() {
+interface PrimarySearchAppBarProps extends MuiAppBarProps {
+}
+
+export default function PrimarySearchAppBar({ color = 'primary', ...props }: PrimarySearchAppBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
@@ -132,9 +136,9 @@ export default function PrimarySearchAppBar() {
   );
 
   return (
-    <ThemeProvider theme={Theme}>
+    <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, width: "100%" }}>
-        <AppBar position="static">
+        <MuiAppBar position="static" color={color} {...props}>
           <Toolbar>
             <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
               <SidebarUnderHeader open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
@@ -216,7 +220,7 @@ export default function PrimarySearchAppBar() {
               />
             </Box>
           </Toolbar>
-        </AppBar>
+        </MuiAppBar>
 
         {renderMobileMenu}
         {renderProfileMenu}

@@ -1,24 +1,40 @@
 import { createTheme } from '@mui/material/styles';
 
-export const Theme = createTheme({
+export const theme = createTheme({
     palette: {
-        primary: {
-            main: '#843ab5',
-            dark: '#6a219c',
-            light: '#c2003f',
-            contrastText: '#fff',
-        },
-        secondary: {
-            main: '#eeeeee',
-            dark: '#c2003f',
-            light: '#ff5252',
-            contrastText: '#000',
-        },
-        background: {
-            default: '#ffffff',
-            paper: '#fffffff',
-        },
+      primary: {
+        main: "#843ab5",
+      },
+      secondary: {
+        main: "#1976d2",
+      },
+      success: {
+        main: "#4caf50",
+      },
+      error: {
+        main: "#f44336",
+      },
+      warning: {
+        main: "#ff9800",
+      },
+      grey: {
+        500: "#9e9e9e",
+        300: "#e6e6e6",
+      },
     },
-});
-
-export default Theme;
+    typography: {
+      fontFamily: "Roboto, Arial, sans-serif",
+      h6: {
+        fontWeight: 600,
+      },
+      h5: {
+        fontWeight: 500,
+      },
+      body2: {
+        fontSize: "0.875rem",
+      },
+    },
+    shape: {
+      borderRadius: 8,
+    },
+  });
