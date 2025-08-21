@@ -7,9 +7,9 @@ export const DialogExcluir = ({ open, onClose, onConfirm }: { open: boolean; onC
             <DialogContent>
                 <p>Tem certeza que deseja excluir?</p>
             </DialogContent>
-            <DialogActions>
-                <Button onClick={onClose}>Cancelar</Button>
-                <Button onClick={onConfirm}>Excluir</Button>
+            <DialogActions sx={{ display: 'flex', gap: 1 }}>
+                <Button onClick={onClose} sx={{ fontFamily: 'Roboto', backgroundColor: 'primary.main', color: 'white'}}>Cancelar</Button>
+                <Button onClick={onConfirm} sx={{ fontFamily: 'Roboto', backgroundColor: 'error.main', color: 'white'}}>Excluir</Button>
             </DialogActions>
         </Dialog>
     );

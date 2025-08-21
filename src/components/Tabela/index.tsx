@@ -16,6 +16,8 @@ import {
 import { EditOutlined as EditIcon, DeleteOutlined as DeleteIcon, VisibilityOutlined as InfoIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
 import FrutaImagem from "./ImagemFruta/FrutaImagem";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+
 
 export interface Fruta {
   id: number;
@@ -64,6 +66,8 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
       currency: "BRL",
     }).format(value);
   };
+
+  const navigate = useNavigate();
 
   const paginatedFrutas = frutas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
@@ -116,8 +120,8 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
-            if (selectedId !== null) onDetails(selectedId);
-            handleCloseMenu();
+              navigate('/detalhes-frutas');
+              handleCloseMenu();
           }}
         >
           <InfoIcon sx={{ mr: 1 }}/>
