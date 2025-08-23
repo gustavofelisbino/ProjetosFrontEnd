@@ -5,6 +5,8 @@ export interface Fruta {
   id: number;
   fruta: string;
   valor: number;
+  status: 'Ativo' | 'Inativo';
+  image: string;
 }
 
 interface FrutasContextType {
@@ -18,10 +20,34 @@ const FrutasContext = createContext<FrutasContextType | undefined>(undefined);
 
 export const FrutasProvider = ({ children }: { children: ReactNode }) => {
   const [frutas, setFrutas] = useState<Fruta[]>([
-    { id: 1, fruta: 'Banana', valor: 1.99 },
-    { id: 2, fruta: 'Manga', valor: 2.99 },
-    { id: 3, fruta: 'Laranja', valor: 3.99 },
-    { id: 4, fruta: 'Uva', valor: 4.99 },
+    { 
+      id: 1, 
+      fruta: 'Maçã', 
+      valor: 5.50,
+      status: 'Ativo',
+      image: 'https://source.unsplash.com/random/100x100/?apple'
+    },
+    { 
+      id: 2, 
+      fruta: 'Banana', 
+      valor: 3.20,
+      status: 'Ativo',
+      image: 'https://source.unsplash.com/random/100x100/?banana'
+    },
+    { 
+      id: 3, 
+      fruta: 'Laranja', 
+      valor: 4.00,
+      status: 'Ativo',
+      image: 'https://source.unsplash.com/random/100x100/?orange'
+    },
+    { 
+      id: 4, 
+      fruta: 'Morango', 
+      valor: 8.90,
+      status: 'Ativo',
+      image: 'https://source.unsplash.com/random/100x100/?strawberry'
+    },
   ]);
 
   const adicionarFruta = (novaFruta: Omit<Fruta, 'id'>) => {

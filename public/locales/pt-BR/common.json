@@ -1,0 +1,10 @@
+{
+  "welcome": "Bem-vindo ao nosso aplicativo",
+  "loading": "Carregando...",
+  "error": "Ocorreu um erro",
+  "navigation": {
+    "home": "Início",
+    "about": "Sobre",
+    "contact": "Contato"
+  }
+}

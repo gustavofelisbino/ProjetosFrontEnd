@@ -1,20 +1,24 @@
 import { Box, Button, Typography, Paper } from "@mui/material";
 import { Add as AddIcon } from '@mui/icons-material';
 import { useState, useCallback } from 'react';
-import { useFrutas } from '../../contexts/FrutasContext';
-import { FrutaForm } from '../../components/Frutas/FrutaForm';
-import FrutaSearch from '../../components/Frutas/FrutaSearch';
-import FrutasTable from '../../components/Tabela';
-import PrimarySearchAppBar from "../../components/AppBar";
-import { DialogExcluir } from '../../components/Dialog/DialogExcluir';
+import { useFrutas } from '../../../contexts/FrutasContext';
+import { FrutaForm } from '../components/FrutaForm';
+import type { Fruta } from '../../../components/Tabela';
+import FrutaSearch from '../components/FrutaSearch';
+import FrutasTable from '../../../components/Tabela';
+import PrimarySearchAppBar from "../../../components/AppBar";
+import { DialogExcluir } from '../../../components/Dialog/DialogExcluir';
+import { DialogDetalhes } from '../components/DialogDetalhes/DialogDetalhes';
 
 export default function FrutasPage() {
   const { frutas = [], adicionarFruta, atualizarFruta, removerFruta } = useFrutas();
   const [searchTerm, setSearchTerm] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
-  const [editingFruta, setEditingFruta] = useState<{ id: number; fruta: string; valor: string } | undefined>();
+  const [editingFruta, setEditingFruta] = useState<{ id: number; fruta: string; valor: string; status: 'Ativo' | 'Inativo'; image: string } | undefined>();
   const [dialogExcluirOpen, setDialogExcluirOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
+  const [selectedFruta, setSelectedFruta] = useState<Fruta | null>(null);
+  const [dialogDetalhesOpen, setDialogDetalhesOpen] = useState(false);
 
   const filteredFrutas = (Array.isArray(frutas) ? frutas : [])
     .filter(fruta => {
@@ -25,21 +29,27 @@ export default function FrutasPage() {
     .map(fruta => ({
       id: fruta.id || 0,
       fruta: fruta.fruta || '',
-      valor: typeof fruta.valor === 'number' ? fruta.valor : 0
+      valor: typeof fruta.valor === 'number' ? fruta.valor : 0,
+      status: fruta.status || 'Ativo',
+      image: fruta.image || ''
     }));
 
-  const handleAddFruta = useCallback(({ fruta, valor }: { fruta: string; valor: string }) => {
+  const handleAddFruta = useCallback(({ fruta, valor, status = 'Ativo' }: { fruta: string; valor: string; status?: 'Ativo' | 'Inativo' }) => {
     const valorNumerico = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
     if (fruta && !isNaN(valorNumerico)) {
       if (editingFruta) {
         atualizarFruta(editingFruta.id, {
           fruta,
-          valor: valorNumerico
+          valor: valorNumerico,
+          status: status || 'Ativo',
+          image: editingFruta.image || `https://source.unsplash.com/random/100x100/?fruit=${fruta.toLowerCase().replace(/\s+/g, '')}`
         });
       } else {
         adicionarFruta({
           fruta,
-          valor: valorNumerico
+          valor: valorNumerico,
+          status: status || 'Ativo',
+          image: `https://source.unsplash.com/random/100x100/?fruit=${fruta.toLowerCase().replace(/\s+/g, '')}`
         });
       }
       setEditingFruta(undefined);
@@ -47,28 +57,26 @@ export default function FrutasPage() {
     }
   }, [adicionarFruta, atualizarFruta, editingFruta]);
 
-  const handleEditFruta = useCallback(({ fruta, valor }: { fruta: string; valor: string }) => {
+  const handleEditFruta = useCallback(({ fruta, valor, status = 'Ativo' }: { fruta: string; valor: string; status?: 'Ativo' | 'Inativo' }) => {
     if (!editingFruta) return;
     
     const valorNumerico = parseFloat(valor.replace(/\./g, '').replace(',', '.'));
     if (fruta && !isNaN(valorNumerico)) {
-      atualizarFruta(editingFruta.id, {
-        fruta,
-        valor: valorNumerico
-      });
-      setEditingFruta(undefined);
-      setIsFormOpen(false);
+      handleAddFruta({ fruta, valor, status });
     }
-  }, [editingFruta, atualizarFruta]);
+  }, [editingFruta, handleAddFruta]);
 
   const handleEditClick = useCallback((id: number) => {
-    const frutaToEdit = frutas.find(fruta => fruta.id === id);
-    if (frutaToEdit) {
+    const fruta = frutas.find(f => f.id === id);
+    if (fruta) {
       setEditingFruta({
-        id: frutaToEdit.id,
-        fruta: frutaToEdit.fruta,
-        valor: frutaToEdit.valor.toFixed(2).replace('.', ',')
+        id: fruta.id,
+        fruta: fruta.fruta,
+        valor: fruta.valor.toString(),
+        status: fruta.status || 'Ativo',
+        image: fruta.image
       });
+      setIsFormOpen(true);
     }
   }, [frutas]);
 
@@ -84,6 +92,25 @@ export default function FrutasPage() {
       setSelectedId(null);
     }
   }, [removerFruta, selectedId]);
+
+  const handleDetailsClick = useCallback((id: number) => {
+    const fruta = frutas.find(f => f.id === id);
+    if (fruta) {
+      setSelectedFruta({
+        id: fruta.id,
+        fruta: fruta.fruta,
+        valor: fruta.valor,
+        status: fruta.status || 'Ativo',
+        image: fruta.image
+      });
+      setDialogDetalhesOpen(true);
+    }
+  }, [frutas]);
+
+  const handleDetailsClose = useCallback(() => {
+    setSelectedId(null);
+    setDialogDetalhesOpen(false);
+  }, []);
 
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -116,7 +143,7 @@ export default function FrutasPage() {
             }))}
             onEdit={handleEditClick}
             onDelete={handleDeleteClick}
-            onDetails={() => {}}
+            onDetails={handleDetailsClick}
           />
         </Paper>
 
@@ -125,6 +152,7 @@ export default function FrutasPage() {
           onClose={() => {
             setIsFormOpen(false);
             setEditingFruta(undefined);
+            setDialogDetalhesOpen(false);
           }}
           onSubmit={editingFruta ? handleEditFruta : handleAddFruta}
           title={editingFruta ? 'Editar Fruta' : 'Adicionar Fruta'}
@@ -135,6 +163,13 @@ export default function FrutasPage() {
           onClose={() => setDialogExcluirOpen(false)}
           onConfirm={handleConfirmDelete}
         />
+        {selectedFruta && (
+          <DialogDetalhes
+            open={dialogDetalhesOpen}
+            onClose={handleDetailsClose}
+            fruta={selectedFruta}
+          />
+        )}
       </Box>
     </Box>
   );

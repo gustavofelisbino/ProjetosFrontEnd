@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useEffect, Component } from "react";
 import type { ErrorInfo, ReactNode } from "react";
-import { CarrinhoProvider, useCarrinho } from "../../contexts/CarrinhoContext";
+import { CarrinhoProvider, useCarrinho } from "../../../contexts/CarrinhoContext";
 import {
   Box,
   Button,
@@ -10,10 +10,10 @@ import {
   ListItem,
   ThemeProvider,
 } from "@mui/material";
-import AppBar from "../../components/AppBar";
-import { theme } from "../../themes";
-import { useFrutas } from "../../contexts/FrutasContext";
-import type { Fruta } from "../../contexts/FrutasContext";
+import AppBar from "../../../components/AppBar";
+import { theme } from "../../../themes";
+import { useFrutas } from "../../../contexts/FrutasContext";
+import type { Fruta } from "../../../contexts/FrutasContext";
 
 interface IState {
   count: number;

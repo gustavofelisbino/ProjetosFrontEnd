@@ -1,0 +1,10 @@
+{
+  "welcome": "Welcome to our app",
+  "loading": "Loading...",
+  "error": "An error occurred",
+  "navigation": {
+    "home": "Home",
+    "about": "About",
+    "contact": "Contact"
+  }
+}

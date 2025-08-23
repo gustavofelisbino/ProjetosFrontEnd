@@ -1,6 +1,7 @@
 import { 
   Dialog, DialogTitle, DialogContent, DialogActions, 
-  Button, TextField, Box, InputAdornment, Paper 
+  Button, TextField, Box, InputAdornment, Paper, 
+  FormControl, InputLabel, Select, MenuItem, FormHelperText 
 } from "@mui/material";
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -10,9 +11,10 @@ import { useEffect } from 'react';
 type FormData = {
   fruta: string;
   valor: string;
+  status: 'Ativo' | 'Inativo';
 };
 
-const frutaSchema = yup.object().shape({
+const frutaSchema = yup.object({
   fruta: yup.string()
     .required('O nome da fruta é obrigatório')
     .min(3, 'O nome deve ter pelo menos 3 caracteres')
@@ -23,26 +25,33 @@ const frutaSchema = yup.object().shape({
       if (!value) return false;
       const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
       return !isNaN(numericValue) && numericValue > 0;
-    })
+    }),
+  status: yup.mixed<'Ativo' | 'Inativo'>()
+    .oneOf(['Ativo', 'Inativo'] as const, 'Status inválido')
+    .required('O status é obrigatório')
 });
 
 interface FrutaFormProps {
   open: boolean;
   onClose: () => void;
-  onSubmit: (data: { fruta: string; valor: string }) => void;
-  initialData?: { fruta: string; valor: string };
+  onSubmit: (data: FormData) => void;
+  initialData?: FormData;
   title: string;
 }
 
 export function FrutaForm({ open, onClose, onSubmit, initialData, title }: FrutaFormProps) {
-  const { control, handleSubmit, formState: { errors }, reset } = useForm<FormData>({
-    resolver: yupResolver(frutaSchema),
-    defaultValues: initialData || { fruta: '', valor: '' },
+  const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
+    resolver: yupResolver(frutaSchema) as any,
+    defaultValues: {
+      fruta: '',
+      valor: '',
+      status: 'Ativo' as const
+    },
     mode: 'onChange'
   });
 
   useEffect(() => {
-    reset(initialData || { fruta: '', valor: '' });
+    reset(initialData || { fruta: '', valor: '', status: 'Ativo' });
   }, [initialData, open, reset]);
 
   const formatCurrencyDisplay = (value: string): string => {
@@ -65,18 +74,16 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
     onChange(formattedValue);
   };
 
-  const onSubmitForm = (data: FormData) => {
-    onSubmit({
-      fruta: data.fruta,
-      valor: formatCurrencyDisplay(data.valor)
-    });
+  const handleFormSubmit = (data: any) => {
+    onSubmit(data as FormData);
+    onClose();
   };
 
   return (
     <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
       <Paper 
         component="form" 
-        onSubmit={handleSubmit(onSubmitForm)} 
+        onSubmit={handleSubmit(handleFormSubmit)} 
         sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}
       >
         <DialogTitle>{title}</DialogTitle>
@@ -92,7 +99,7 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
                   fullWidth
                   margin="normal"
                   error={!!errors.fruta}
-                  helperText={errors.fruta?.message}
+                  helperText={errors.fruta?.message as string}
                 />
               )}
             />
@@ -108,12 +115,34 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
                   placeholder="0,00"
                   fullWidth
                   error={!!errors.valor}
-                  helperText={errors.valor?.message}
+                  helperText={errors.valor?.message as string}
                   InputProps={{
                     startAdornment: <InputAdornment position="start">R$</InputAdornment>,
                     inputMode: 'numeric'
                   }}
                 />
+              )}
+            />
+            
+            <Controller
+              name="status"
+              control={control}
+              render={({ field }) => (
+                <FormControl fullWidth margin="normal" error={!!errors.status}>
+                  <InputLabel>Status</InputLabel>
+                  <Select
+                    {...field}
+                    label="Status"
+                    value={field.value || 'Ativo'}
+                    onChange={(e) => field.onChange(e.target.value as 'Ativo' | 'Inativo')}
+                  >
+                    <MenuItem value="Ativo">Disponível</MenuItem>
+                    <MenuItem value="Inativo">Indisponível</MenuItem>
+                  </Select>
+                  {errors.status && (
+                    <FormHelperText>{errors.status.message as string}</FormHelperText>
+                  )}
+                </FormControl>
               )}
             />
           </Box>

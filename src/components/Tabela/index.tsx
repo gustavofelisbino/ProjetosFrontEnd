@@ -12,19 +12,25 @@ import {
   Menu,
   MenuItem,
   TablePagination,
+  Chip,
 } from "@mui/material";
-import { EditOutlined as EditIcon, DeleteOutlined as DeleteIcon, VisibilityOutlined as InfoIcon, MoreVert as MoreVertIcon } from '@mui/icons-material';
+import { 
+  EditOutlined as EditIcon, 
+  DeleteOutlined as DeleteIcon, 
+  VisibilityOutlined as InfoIcon, 
+  MoreVert as MoreVertIcon,
+  CheckCircle as CheckCircleIcon,
+  Cancel as CancelIcon
+} from '@mui/icons-material';
 import FrutaImagem from "./ImagemFruta/FrutaImagem";
 import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-
 
 export interface Fruta {
   id: number;
   fruta: string;
   valor: number;
-  status?: "Ativo" | "Inativo" | "Bloqueado";
-  image?: string;
+  status: 'Ativo' | 'Inativo';
+  image: string;
 }
 
 interface FrutasTableProps {
@@ -67,8 +73,6 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     }).format(value);
   };
 
-  const navigate = useNavigate();
-
   const paginatedFrutas = frutas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
   return (
@@ -77,9 +81,11 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
         <Table>
           <TableHead sx={{ fontWeight: "600", color: "grey.900" }}>
             <TableRow>
-              <TableCell sx={{ fontWeight: "600" }}>Fruta</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "600" }}>Valor</TableCell>
-              <TableCell align="right" sx={{ fontWeight: "600" }}>Ações</TableCell>
+              <TableCell align="left" sx={{ fontWeight: "600" }}>Imagem</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "600" }}>Fruta</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "600" }}>Status</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "600" }}>Valor</TableCell>
+              <TableCell align="center" sx={{ fontWeight: "600" }}>Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -87,13 +93,39 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
               <TableRow key={fruta.id} sx={{ "&:hover": { backgroundColor: "grey.300" } }}>
                 <TableCell>
                   <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <FrutaImagem name={fruta.fruta} image={fruta.image} />
+                    <FrutaImagem image={fruta.image} name={""} />
                   </Box>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
+                  <Typography variant="body1">{fruta.fruta}</Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Chip
+                    icon={fruta.status === 'Ativo' ? 
+                      <CheckCircleIcon fontSize="small" /> : 
+                      <CancelIcon fontSize="small" />
+                    }
+                    label={fruta.status}
+                    color={fruta.status === 'Ativo' ? 'success' : 'error'}
+                    variant="outlined"
+                    size="small"
+                    sx={{
+                      fontWeight: 'medium',
+                      textTransform: 'uppercase',
+                      fontSize: '0.75rem',
+                      '& .MuiChip-icon': {
+                        color: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
+                      },
+                      borderColor: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
+                      bgcolor: fruta.status === 'Ativo' ? 'success.light' : 'error.light',
+                      color: fruta.status === 'Ativo' ? 'success.dark' : 'error.dark',
+                    }}
+                  />
+                </TableCell>
+                <TableCell align="center">
                   <Typography variant="body1">{formatCurrency(fruta.valor)}</Typography>
                 </TableCell>
-                <TableCell align="right">
+                <TableCell align="center">
                   <Box sx={{ display: "flex", justifyContent: "center" }}>
                     <IconButton onClick={(e) => handleOpenMenu(e, fruta.id)}>
                       <MoreVertIcon />
@@ -120,7 +152,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
-              navigate('/detalhes-frutas');
+              if (selectedId !== null) onDetails(selectedId);
               handleCloseMenu();
           }}
         >
