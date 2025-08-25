@@ -90,12 +90,6 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
       <TableContainer 
         component={Paper} 
         elevation={0}
-        sx={{
-          border: '1px solid',
-          borderColor: 'divider',
-          borderRadius: 2,
-          overflow: 'hidden',
-        }}
       >
         <Table>
           <TableHead>

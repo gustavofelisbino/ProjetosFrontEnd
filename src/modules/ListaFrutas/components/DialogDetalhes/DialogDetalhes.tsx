@@ -1,8 +1,11 @@
-import { Dialog, DialogContent, Button, Typography, Box, Avatar, Paper, Card, CardContent, Chip } from "@mui/material";
+import { Dialog, DialogContent, Button, Typography, Box, Paper, Card, CardContent, Chip } from "@mui/material";
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import CancelIcon from '@mui/icons-material/Cancel';
 import type { Fruta } from "../../../../components/Tabela";
 import { formatCurrency } from "../../../../utils/formatCurrency";
+import ZoomIn from '@mui/icons-material/ZoomIn';
+import theme from "../../../../themes";
+import { formatDate } from "../../../../utils/formatDate";
 
 interface IDetalhes {
     open: boolean;
@@ -14,7 +17,7 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
     if (!fruta) return null;
 
     return (
-        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth>
+        <Dialog open={open} onClose={onClose} maxWidth="md" fullWidth sx={{ borderRadius: 2, color: '#616161' }}>
             <Paper 
                 elevation={0}
                 sx={{
@@ -24,16 +27,11 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2}}>
-                <Avatar 
-
-                    alt={fruta.fruta}
-                    sx={{ width: 56, height: 56 }}
-                />
-                <Typography variant="h6" fontWeight="bold">{fruta.fruta}</Typography>
-                <Typography variant="body2" color="text.secondary">Código: {fruta.id}</Typography>
+                    <ZoomIn sx={{ padding: 1, fontSize: 32, backgroundColor: '#ADD8E6', borderRadius: 20, color: theme.palette.primary.dark }}/>
+                    <Typography fontWeight="bold" sx={{ fontSize: 24, color: '#616161' }}>{fruta.fruta}</Typography>
                 </Box>
                 <Card 
-                    elevation={3}
+                    elevation={2}
                     sx={{
                         borderRadius: 2,
                         overflow: 'hidden',
@@ -41,45 +39,67 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
                         bgcolor: 'background.paper'
                     }}
                 >
-                    <CardContent sx={{ p: 0 }}>
-                        
+                    <CardContent>
                         <DialogContent>
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle2" color="text.secondary">Valor</Typography>
-                                <Typography variant="h6" fontWeight="bold">{formatCurrency(fruta.valor)}</Typography>
-                            </Box>
-                            
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle2" color="text.secondary" sx={{ mb: 1 }}>Status</Typography>
-                                <Chip
-                                    icon={fruta.status === 'Ativo' ? 
-                                        <CheckCircleIcon fontSize="small" /> : 
-                                        <CancelIcon fontSize="small" />
-                                    }
+                            <Typography variant="h5" sx={{ color: '#616161', mb: 2 }}>Dados da Fruta</Typography>
+                            <Box display="flex" justifyContent="space-between">
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Typography variant="h6" fontWeight="400" color="text.secondary">Identificação</Typography>
+                                    <Typography variant="h6" fontWeight="bold">{fruta.id}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Typography variant="h6" fontWeight="400" color="text.secondary">Valor</Typography>
+                                    <Typography variant="h6" fontWeight="bold">{formatCurrency(fruta.valor)}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Typography variant="h6" fontWeight="400" color="text.secondary">Data de Vencimento</Typography>
+                                    <Typography variant="h6" fontWeight="bold">{formatDate(fruta.dataVencimento)}</Typography>
+                                </Box>
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
+                                    <Typography variant="h6" fontWeight="400" color="text.secondary">Status</Typography>
+                                    <Chip
+                                        icon={fruta.status === 'Ativo' ? 
+                                            <CheckCircleIcon fontSize="small" /> : 
+                                            <CancelIcon fontSize="small" />
+                                        }
                                     label={fruta.status}
-                                    color={fruta.status === 'Ativo' ? 'success' : 'error'}
                                     variant="outlined"
                                     sx={{
                                         fontWeight: 'bold',
                                         textTransform: 'uppercase',
                                         '& .MuiChip-icon': {
-                                            color: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
+                                            color: fruta.status === 'Ativo' ? theme.palette.success.dark : theme.palette.error.dark,
                                         },
-                                        borderColor: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
-                                        color: fruta.status === 'Ativo' ? 'success.dark' : 'error.dark',
+                                        borderColor: fruta.status === 'Ativo' ? theme.palette.success.main : theme.palette.error.main,
+                                        color: fruta.status === 'Ativo' ? theme.palette.success.dark : theme.palette.error.dark,
                                     }}
                                 />
-                            </Box>
-
-                            <Box sx={{ mb: 2 }}>
-                                <Typography variant="subtitle2" color="text.secondary">Descrição</Typography>
-                                <Typography variant="body2">
-                                    {fruta.descricao}
-                                </Typography>
+                                </Box>
                             </Box>
                         </DialogContent>
-                    </CardContent>                
-                </Card>
+                    </CardContent>   
+                    </Card>
+                    <Card 
+                    elevation={2}
+                    sx={{
+                        borderRadius: 2,
+                        overflow: 'hidden',
+                        width: '100%',
+                        bgcolor: 'background.paper',
+                        mt: 2
+                    }}
+                    >
+                    <CardContent>
+                        <DialogContent>
+                            <Typography variant="h5" color="text.secondary" sx={{ mb: 2 }}>Descrição</Typography>
+                            <Box>
+                                <Typography variant="body2">
+                                        {fruta.descricao}
+                                    </Typography>
+                                </Box>
+                            </DialogContent>
+                        </CardContent>
+                    </Card>             
                         <Box sx={{ display: 'flex', justifyContent: 'end', gap: 2, mt: 3 }}>
                             <Button 
                                 variant="outlined" 

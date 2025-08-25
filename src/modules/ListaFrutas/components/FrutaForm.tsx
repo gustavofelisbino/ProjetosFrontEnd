@@ -1,12 +1,13 @@
 import { 
   Dialog, DialogTitle, DialogContent, DialogActions, 
   Button, TextField, Box, InputAdornment, Paper, 
-  FormControl, InputLabel, Select, MenuItem, FormHelperText 
-} from "@mui/material";
+  FormControl, InputLabel, Select, MenuItem, FormHelperText,
+  Card, CardContent } from "@mui/material";
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useEffect } from 'react';
+import AddCircleIcon from '@mui/icons-material/AddCircle';
 
 type FormData = {
   fruta: string;
@@ -32,9 +33,6 @@ const frutaSchema = yup.object({
     .oneOf(['Ativo', 'Inativo'] as const, 'Status inválido')
     .required('O status é obrigatório'),
   descricao: yup.string()
-    .min(5, 'A descrição deve ter pelo menos 5 caracteres')
-    .max(100, 'A descrição não pode ter mais de 100 caracteres')
-    
 });
 
 interface FrutaFormProps {
@@ -95,48 +93,56 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
   };
 
   return (
-    <Dialog open={open} onClose={onClose} maxWidth="sm" fullWidth>
+    <Dialog open={open} onClose={onClose} maxWidth="lg" fullWidth>
       <Paper 
         component="form" 
         onSubmit={handleSubmit(handleFormSubmit)} 
-        sx={{ p: 2, bgcolor: 'white', borderRadius: 2 }}
+        sx={{ p: 0, bgcolor: 'background.default', borderRadius: 2 }}
       >
-        <DialogTitle>{title}</DialogTitle>
+        <DialogTitle sx={{ fontSize: 26 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+            <AddCircleIcon sx={{ fontSize: 32, color: 'primary.main' }} />
+            {title}
+          </Box>
+        </DialogTitle>
         <DialogContent>
-          <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', padding: 2 }}>
-            <Box sx={{ display: 'flex', gap: 2 }}>
-              <Controller
-                name="fruta"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    label="Nome da Fruta"
-                    fullWidth
-                    margin="normal"
-                    error={!!errors.fruta}
-                    helperText={errors.fruta?.message as string}
-                  />
-                )}
-              />
-              <Controller
-                name="dataVencimento"
-                control={control}
-                render={({ field }) => (
-                  <TextField
-                    {...field}
-                    type="date"
-                    label="Data de Vencimento"
-                    margin="normal"
-                    InputLabelProps={{
-                      shrink: true,
-                    }}
-                    fullWidth
-                  />
-                )}
-              />
+          <Card sx={{ p: 0 }}>
+            <CardContent>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', mb: 2 }}>
+              <Box sx={{ display: 'flex', gap: 2 }}>
+                <Controller
+                  name="fruta"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      label="Nome da Fruta *"
+                      fullWidth
+                      margin="normal"
+                      error={!!errors.fruta}
+                      helperText={errors.fruta?.message as string}
+                    />
+                  )}
+                />
+                <Controller
+                  name="dataVencimento"
+                  control={control}
+                  render={({ field }) => (
+                    <TextField
+                      {...field}
+                      type="date"
+                      label="Data de Vencimento *"
+                      margin="normal"
+                      InputLabelProps={{
+                        shrink: true,
+                      }}
+                      fullWidth
+                    />
+                  )}
+                />
             </Box>
-            <Controller
+            </Box>
+          <Controller
               name="valor"
               control={control}
               render={({ field: { onChange, value, ...field } }) => (
@@ -144,7 +150,7 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
                   {...field}
                   value={value || ''}
                   onChange={(e) => handleValueChange(e, onChange)}
-                  label="Valor"
+                  label="Valor *"
                   placeholder="0,00"
                   fullWidth
                   error={!!errors.valor}
@@ -192,9 +198,10 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
                 />
               )}
             />
-          </Box>
+          </CardContent>
+        </Card>
         </DialogContent>
-        <DialogActions>
+        <DialogActions sx={{ p: 3 }}>
           <Button type="button" onClick={onClose}>
             Cancelar
           </Button>

@@ -21,6 +21,7 @@ export default function FrutasPage() {
   const [dialogExcluirOpen, setDialogExcluirOpen] = useState(false);
   const [selectedId, setSelectedId] = useState<number | null>(null);
   const [selectedFruta, setSelectedFruta] = useState<Fruta | null>(null);
+  const [frutaToDelete, setFrutaToDelete] = useState<Fruta | null>(null);
   const [dialogDetalhesOpen, setDialogDetalhesOpen] = useState(false);
 
   const filteredFrutas = frutas
@@ -76,8 +77,16 @@ export default function FrutasPage() {
   }, [frutas]);
 
   const handleDeleteClick = (id: number) => {
-    setDialogExcluirOpen(true);
-    setSelectedId(id);
+    const fruta = frutas.find(f => f.id === id);
+    if (fruta) {
+      setFrutaToDelete({
+        ...fruta,
+        status: fruta.status || 'Ativo' as const,
+        descricao: fruta.descricao || ""
+      });
+      setSelectedId(id);
+      setDialogExcluirOpen(true);
+    }
   };
 
   const handleConfirmDelete = () => {
@@ -85,6 +94,7 @@ export default function FrutasPage() {
       removerFruta(selectedId);
       setDialogExcluirOpen(false);
       setSelectedId(null);
+      setFrutaToDelete(null);
     }
   };
 
@@ -109,41 +119,45 @@ export default function FrutasPage() {
     <Box sx={{ flexGrow: 1 }}>
       <PrimarySearchAppBar color="secondary" />
       <Box sx={{ width: '60%', margin: 'auto', marginTop: '60px' }}>
-        <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3, alignItems: 'center' }}>
-          <Typography variant="h5" sx={{ fontWeight: '500', fontFamily: 'Roboto' }}>Lista de Frutas</Typography>
-          <Box sx={{ display: 'flex', gap: 2, alignItems: 'center' }}>
-            <FrutaSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-            <Button
-              variant="contained"
-              startIcon={<AddIcon />}
-              onClick={() => setIsFormOpen(true)}
-              disabled={isFormOpen}
-              color="secondary"
-              sx={{
-                py: 1,
-                borderRadius: 2,
-                bgcolor: "primary.main",
-                color: "primary.contrastText"
-              }}
-            >
-              Adicionar Fruta
-            </Button>
+        <Box sx={{ display: 'flex', mb: 3, alignItems: 'center' }}>
+          <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Box sx={{ gap: 2, ml: 2 }}>
+              <FrutaSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+            </Box>
+            <Box sx={{ gap: 2 }}>
+              <Button
+                  variant="contained"
+                  startIcon={<AddIcon />}
+                  onClick={() => setIsFormOpen(true)}
+                  disabled={isFormOpen}
+                color="secondary"
+                sx={{
+                  py: 1,
+                  borderRadius: 2,
+                  bgcolor: "primary.main",
+                  color: "primary.contrastText"
+                }}
+              >
+                Adicionar Fruta
+              </Button>
+            </Box>
           </Box>
-        </Box>
+      </Box>
 
-        <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
-          <FrutasTable
-            frutas={filteredFrutas}
-            onEdit={handleEditClick}
-            onDelete={handleDeleteClick}
-            onDetails={handleDetailsClick}
+      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+        <FrutasTable
+          frutas={filteredFrutas}
+          onEdit={handleEditClick}
+          onDelete={handleDeleteClick}
+          onDetails={handleDetailsClick}
           />
-        </Paper>
+      </Paper>
 
-        <FrutaForm
-          open={isFormOpen || !!editingFruta}
-          onClose={() => {
-            setIsFormOpen(false);
+      <FrutaForm
+        open={isFormOpen || !!editingFruta}
+        onClose={() => {
+          setIsFormOpen(false);
             setEditingFruta(undefined);
           }}
           onSubmit={handleSubmit}
@@ -152,11 +166,14 @@ export default function FrutasPage() {
           descricao={editingFruta?.descricao}
         />
 
-        <DialogExcluir
-          open={dialogExcluirOpen}
-          onClose={() => setDialogExcluirOpen(false)}
-          onConfirm={handleConfirmDelete}
-        />
+        {frutaToDelete && (
+          <DialogExcluir
+            open={dialogExcluirOpen}
+            onClose={() => setDialogExcluirOpen(false)}
+            onConfirm={handleConfirmDelete}
+            fruta={frutaToDelete}
+          />
+        )}
 
         {selectedFruta && (
           <DialogDetalhes
