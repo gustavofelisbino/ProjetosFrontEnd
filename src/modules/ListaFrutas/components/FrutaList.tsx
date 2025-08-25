@@ -4,9 +4,11 @@ import { Box, Button } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 
 interface Fruta {
+  dataVencimento: Date;
   id: number;
   fruta: string;
   valor: number;
+  status: 'Ativo' | 'Inativo';
 }
 
 interface FrutaListProps {

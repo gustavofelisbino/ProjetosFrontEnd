@@ -10,8 +10,10 @@ import { useEffect } from 'react';
 
 type FormData = {
   fruta: string;
+  dataVencimento: string;
   valor: string;
   status: 'Ativo' | 'Inativo';
+  descricao: string;
 };
 
 const frutaSchema = yup.object({
@@ -28,7 +30,11 @@ const frutaSchema = yup.object({
     }),
   status: yup.mixed<'Ativo' | 'Inativo'>()
     .oneOf(['Ativo', 'Inativo'] as const, 'Status inválido')
-    .required('O status é obrigatório')
+    .required('O status é obrigatório'),
+  descricao: yup.string()
+    .min(5, 'A descrição deve ter pelo menos 5 caracteres')
+    .max(100, 'A descrição não pode ter mais de 100 caracteres')
+    
 });
 
 interface FrutaFormProps {
@@ -37,6 +43,7 @@ interface FrutaFormProps {
   onSubmit: (data: FormData) => void;
   initialData?: FormData;
   title: string;
+  descricao?: string;
 }
 
 export function FrutaForm({ open, onClose, onSubmit, initialData, title }: FrutaFormProps) {
@@ -44,14 +51,22 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
     resolver: yupResolver(frutaSchema) as any,
     defaultValues: {
       fruta: '',
+      dataVencimento: new Date().toISOString().split('T')[0],
       valor: '',
-      status: 'Ativo' as const
+      status: 'Ativo' as const,
+      descricao: ''
     },
     mode: 'onChange'
   });
 
   useEffect(() => {
-    reset(initialData || { fruta: '', valor: '', status: 'Ativo' });
+    reset(initialData || { 
+      fruta: '', 
+      dataVencimento: new Date().toISOString().split('T')[0],
+      valor: '', 
+      status: 'Ativo', 
+      descricao: ''
+    });
   }, [initialData, open, reset]);
 
   const formatCurrencyDisplay = (value: string): string => {
@@ -89,20 +104,38 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
         <DialogTitle>{title}</DialogTitle>
         <DialogContent>
           <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', padding: 2 }}>
-            <Controller
-              name="fruta"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Nome da Fruta"
-                  fullWidth
-                  margin="normal"
-                  error={!!errors.fruta}
-                  helperText={errors.fruta?.message as string}
-                />
-              )}
-            />
+            <Box sx={{ display: 'flex', gap: 2 }}>
+              <Controller
+                name="fruta"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label="Nome da Fruta"
+                    fullWidth
+                    margin="normal"
+                    error={!!errors.fruta}
+                    helperText={errors.fruta?.message as string}
+                  />
+                )}
+              />
+              <Controller
+                name="dataVencimento"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    type="date"
+                    label="Data de Vencimento"
+                    margin="normal"
+                    InputLabelProps={{
+                      shrink: true,
+                    }}
+                    fullWidth
+                  />
+                )}
+              />
+            </Box>
             <Controller
               name="valor"
               control={control}
@@ -143,6 +176,20 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
                     <FormHelperText>{errors.status.message as string}</FormHelperText>
                   )}
                 </FormControl>
+              )}
+            />
+            <Controller
+              name="descricao"
+              control={control}
+              render={({ field }) => (
+                <TextField
+                  {...field}
+                  label="Descrição"
+                  margin="normal"
+                  fullWidth
+                  error={!!errors.descricao}
+                  helperText={errors.descricao?.message as string}
+                />
               )}
             />
           </Box>

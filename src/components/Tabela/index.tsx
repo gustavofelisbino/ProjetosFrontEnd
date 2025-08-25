@@ -17,20 +17,21 @@ import {
 import { 
   EditOutlined as EditIcon, 
   DeleteOutlined as DeleteIcon, 
-  VisibilityOutlined as InfoIcon, 
-  MoreVert as MoreVertIcon,
+  VisibilityOutlined as InfoIcon,
   CheckCircle as CheckCircleIcon,
-  Cancel as CancelIcon
+  Cancel as CancelIcon,
+  MoreVert as MoreVertIcon
 } from '@mui/icons-material';
-import FrutaImagem from "./ImagemFruta/FrutaImagem";
 import { useState } from "react";
+import { useTheme } from "@mui/material/styles";
 
 export interface Fruta {
   id: number;
   fruta: string;
+  dataVencimento: Date;
   valor: number;
   status: 'Ativo' | 'Inativo';
-  image: string;
+  descricao?: string;
 }
 
 interface FrutasTableProps {
@@ -47,7 +48,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [selectedId, setSelectedId] = useState<number | null>(null);
 
-  const handleOpenMenu = (event: React.MouseEvent<HTMLElement>, id: number) => {
+  const handleClickMenu = (event: React.MouseEvent<HTMLElement>, id: number) => {
     setAnchorEl(event.currentTarget);
     setSelectedId(id);
   };
@@ -66,68 +67,115 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     setPage(0);
   };
 
-  const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat("pt-BR", {
-      style: "currency",
-      currency: "BRL",
-    }).format(value);
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      timeZone: 'UTC'
+    };
+    try {
+      const date = dateString.includes('T') ? new Date(dateString) : new Date(dateString);
+      return date.toLocaleDateString('pt-BR', options);
+    } catch (e) {
+      console.error(e);
+      return dateString;
+    }
   };
 
-  const paginatedFrutas = frutas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+  const theme = useTheme();
 
-  return (
-    <Paper elevation={0} sx={{ borderRadius: 3, overflow: "hidden" }}>
-      <TableContainer>
+  const tableContent = (
+    <Box>
+      <TableContainer 
+        component={Paper} 
+        elevation={0}
+        sx={{
+          border: '1px solid',
+          borderColor: 'divider',
+          borderRadius: 2,
+          overflow: 'hidden',
+        }}
+      >
         <Table>
-          <TableHead sx={{ fontWeight: "600", color: "grey.900" }}>
-            <TableRow>
-              <TableCell align="left" sx={{ fontWeight: "600" }}>Imagem</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "600" }}>Fruta</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "600" }}>Status</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "600" }}>Valor</TableCell>
-              <TableCell align="center" sx={{ fontWeight: "600" }}>Ações</TableCell>
+          <TableHead>
+            <TableRow 
+              sx={{ 
+                color: theme.palette.primary.contrastText,
+                fontWeight: 600,
+              }}
+            >
+              <TableCell align="left">Fruta</TableCell>
+              <TableCell align="center">Valor</TableCell>
+              <TableCell align="center">Vencimento</TableCell>
+              <TableCell align="center">Status</TableCell>
+              <TableCell align="right">Ações</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {paginatedFrutas.map((fruta) => (
-              <TableRow key={fruta.id} sx={{ "&:hover": { backgroundColor: "grey.300" } }}>
-                <TableCell>
-                  <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-                    <FrutaImagem image={fruta.image} name={""} />
-                  </Box>
+            {(rowsPerPage > 0
+              ? frutas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+              : frutas
+            ).map((fruta: Fruta) => (
+              <TableRow
+                key={fruta.id}
+                sx={{
+                  '&:nth-of-type(odd)': {
+                    backgroundColor: theme.palette.grey[50],
+                  },
+                  '&:last-child td, &:last-child th': { border: 0 },
+                  '&:hover': {
+                    backgroundColor: theme.palette.action.hover,
+                    '& .MuiButton-root': {
+                      color: theme.palette.primary.main,
+                    },
+                  },
+                }}
+              >
+                <TableCell component="th" scope="row">
+                  <Typography variant="subtitle1" color="text.primary" fontWeight={500}>
+                    {fruta.fruta}
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
-                  <Typography variant="body1">{fruta.fruta}</Typography>
+                  <Typography variant="body1" color="primary.main" fontWeight={500}>
+                    {new Intl.NumberFormat('pt-BR', {
+                      style: 'currency',
+                      currency: 'BRL'
+                    }).format(fruta.valor)}
+                  </Typography>
+                </TableCell>
+                <TableCell align="center">
+                  <Typography variant="body2" color="text.secondary">
+                    {formatDate(fruta.dataVencimento.toString())}
+                  </Typography>
                 </TableCell>
                 <TableCell align="center">
                   <Chip
-                    icon={fruta.status === 'Ativo' ? 
-                      <CheckCircleIcon fontSize="small" /> : 
-                      <CancelIcon fontSize="small" />
-                    }
+                    icon={fruta.status === 'Ativo' ? <CheckCircleIcon /> : <CancelIcon />}
                     label={fruta.status}
                     color={fruta.status === 'Ativo' ? 'success' : 'error'}
-                    variant="outlined"
                     size="small"
+                    variant="outlined"
                     sx={{
-                      fontWeight: 'medium',
-                      textTransform: 'uppercase',
-                      fontSize: '0.75rem',
                       '& .MuiChip-icon': {
                         color: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
                       },
-                      borderColor: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
-                      bgcolor: fruta.status === 'Ativo' ? 'success.light' : 'error.light',
-                      color: fruta.status === 'Ativo' ? 'success.dark' : 'error.dark',
                     }}
                   />
                 </TableCell>
-                <TableCell align="center">
-                  <Typography variant="body1">{formatCurrency(fruta.valor)}</Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Box sx={{ display: "flex", justifyContent: "center" }}>
-                    <IconButton onClick={(e) => handleOpenMenu(e, fruta.id)}>
+                <TableCell align="right">
+                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
+                    <IconButton
+                      size="small"
+                      onClick={(e) => handleClickMenu(e, fruta.id)}
+                      sx={{ 
+                        color: theme.palette.text.secondary,
+                        '&:hover': {
+                          backgroundColor: theme.palette.action.hover,
+                        },
+                      }}
+                    >
                       <MoreVertIcon />
                     </IconButton>
                   </Box>
@@ -139,16 +187,35 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
       </TableContainer>
 
       <TablePagination
+        rowsPerPageOptions={[5, 10, 25]}
         component="div"
         count={frutas.length}
+        rowsPerPage={rowsPerPage}
         page={page}
         onPageChange={handleChangePage}
-        rowsPerPage={rowsPerPage}
         onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Itens por página"
-        labelDisplayedRows={({ to, count }) => `Exibindo ${to} de ${count}`}
-      />
-
+        labelRowsPerPage="Itens por página:"
+        labelDisplayedRows={({ from, to, count }) =>
+          `${from}–${to} de ${count !== -1 ? count : `mais de ${to}`}`
+        }
+        sx={{
+          mt: 2,
+          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-input': {
+            color: 'text.secondary',
+            fontSize: '0.875rem',
+          },
+          '& .MuiSvgIcon-root': {
+            color: theme.palette.primary.main,
+          },
+          '& .MuiButtonBase-root.Mui-selected': {
+            backgroundColor: theme.palette.primary.main,
+            color: theme.palette.primary.contrastText,
+            '&:hover': {
+              backgroundColor: theme.palette.primary.dark,
+            },
+          },
+        }}
+      />   
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
         <MenuItem
           onClick={() => {
@@ -179,6 +246,8 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
           Excluir
         </MenuItem>
       </Menu>
-    </Paper>
+    </Box>
   );
+
+  return tableContent;
 }

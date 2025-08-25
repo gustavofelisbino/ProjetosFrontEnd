@@ -137,9 +137,27 @@ export default function PrimarySearchAppBar({ color = 'primary', ...props }: Pri
 
   return (
     <ThemeProvider theme={theme}>
-      <Box sx={{ flexGrow: 1, width: "100%" }}>
-        <MuiAppBar position="static" color={color} {...props}>
-          <Toolbar>
+      <Box sx={{ flexGrow: 1, width: '100%', '& .MuiAppBar-root': { minHeight: '64px' } }}>
+        <MuiAppBar 
+          position="static" 
+          color={color} 
+          {...props} 
+          elevation={0}
+          sx={{ 
+            ...props.sx, 
+            '&.MuiAppBar-root': { 
+              padding: 0,
+              margin: 0,
+              minHeight: '64px!important',
+              '& .MuiToolbar-root': {
+                minHeight: '64px!important',
+                padding: '0 16px!important',
+                margin: 0
+              }
+            }
+          }}
+        >
+          <Toolbar disableGutters>
             <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
               <SidebarUnderHeader open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
               <MenuIcon 

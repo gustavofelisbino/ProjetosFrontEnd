@@ -25,7 +25,7 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2}}>
                 <Avatar 
-                    src={fruta.image} 
+
                     alt={fruta.fruta}
                     sx={{ width: 56, height: 56 }}
                 />
@@ -66,7 +66,6 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
                                             color: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
                                         },
                                         borderColor: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
-                                        bgcolor: fruta.status === 'Ativo' ? 'success.light' : 'error.light',
                                         color: fruta.status === 'Ativo' ? 'success.dark' : 'error.dark',
                                     }}
                                 />
@@ -75,8 +74,7 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
                             <Box sx={{ mb: 2 }}>
                                 <Typography variant="subtitle2" color="text.secondary">Descrição</Typography>
                                 <Typography variant="body2">
-                                    Detalhes adicionais sobre a fruta {fruta.fruta}. 
-                                    {fruta.status === 'Ativo' ? ' Disponível para compra.' : ' Atualmente indisponível.'}
+                                    {fruta.descricao}
                                 </Typography>
                             </Box>
                         </DialogContent>

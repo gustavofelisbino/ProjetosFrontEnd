@@ -2,11 +2,13 @@ import { createContext, useContext, useState } from 'react';
 import type { ReactNode } from 'react';
 
 export interface Fruta {
+  dataVencimento: Date;
   id: number;
   fruta: string;
   valor: number;
   status: 'Ativo' | 'Inativo';
-  image: string;
+  image?: string;
+  descricao?: string
 }
 
 interface FrutasContextType {
@@ -25,28 +27,32 @@ export const FrutasProvider = ({ children }: { children: ReactNode }) => {
       fruta: 'Maçã', 
       valor: 5.50,
       status: 'Ativo',
-      image: 'https://source.unsplash.com/random/100x100/?apple'
+      dataVencimento: new Date(),
+      descricao: ""
     },
     { 
       id: 2, 
       fruta: 'Banana', 
       valor: 3.20,
       status: 'Ativo',
-      image: 'https://source.unsplash.com/random/100x100/?banana'
+      dataVencimento: new Date(Date.now() + 86400000),
+      descricao: ""
     },
     { 
       id: 3, 
       fruta: 'Laranja', 
       valor: 4.00,
       status: 'Ativo',
-      image: 'https://source.unsplash.com/random/100x100/?orange'
+      dataVencimento: new Date(Date.now() + 2 * 86400000),
+      descricao: ""
     },
     { 
       id: 4, 
       fruta: 'Morango', 
       valor: 8.90,
       status: 'Ativo',
-      image: 'https://source.unsplash.com/random/100x100/?strawberry'
+      dataVencimento: new Date(Date.now() + 3 * 86400000),
+      descricao: ""
     },
   ]);
 
