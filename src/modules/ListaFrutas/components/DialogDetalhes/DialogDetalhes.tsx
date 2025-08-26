@@ -6,6 +6,7 @@ import { formatCurrency } from "../../../../utils/formatCurrency";
 import ZoomIn from '@mui/icons-material/ZoomIn';
 import theme from "../../../../themes";
 import { formatDate } from "../../../../utils/formatDate";
+import { alpha } from "@mui/material/styles";
 
 interface IDetalhes {
     open: boolean;
@@ -27,7 +28,7 @@ export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
                 }}
             >
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 2, mb: 2}}>
-                    <ZoomIn sx={{ padding: 1, fontSize: 32, backgroundColor: '#ADD8E6', borderRadius: 20, color: theme.palette.primary.dark }}/>
+                    <ZoomIn sx={{ padding: 1, fontSize: 32, backgroundColor: alpha(theme.palette.primary.dark, 0.3), borderRadius: 20, color: '#000000' }}/>
                     <Typography fontWeight="bold" sx={{ fontSize: 24, color: '#616161' }}>{fruta.fruta}</Typography>
                 </Box>
                 <Card 

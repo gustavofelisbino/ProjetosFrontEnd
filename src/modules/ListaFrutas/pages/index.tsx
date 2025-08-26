@@ -1,4 +1,4 @@
-import { Box, Button, Typography, Paper } from "@mui/material";
+import { Box, Button, Typography, Paper, Card, CardContent } from "@mui/material";
 import { Add as AddIcon } from '@mui/icons-material';
 import { useState, useCallback } from 'react';
 import { useFrutas } from '../../../contexts/FrutasContext';
@@ -9,6 +9,9 @@ import FrutasTable from '../../../components/Tabela';
 import PrimarySearchAppBar from "../../../components/AppBar";
 import { DialogExcluir } from '../../../components/Dialog/DialogExcluir';
 import { DialogDetalhes } from '../components/DialogDetalhes/DialogDetalhes';
+import { Numbers as NumberIcon } from '@mui/icons-material';
+import { alpha } from "@mui/material/styles";
+import theme from "../../../themes";
 
 export default function FrutasPage() {
   const { frutas = [], adicionarFruta, atualizarFruta, removerFruta } = useFrutas();
@@ -118,14 +121,25 @@ export default function FrutasPage() {
   return (
     <Box sx={{ flexGrow: 1 }}>
       <PrimarySearchAppBar color="secondary" />
-      <Box sx={{ width: '60%', margin: 'auto', marginTop: '60px' }}>
-        <Box sx={{ display: 'flex', mb: 3, alignItems: 'center' }}>
-          <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+      <Box 
+      sx={{
+        width: '80%',
+        margin: 'auto',
+        marginTop: '60px'
+      }}>
+        <Box
+        sx={{
+          display: 'flex',
+          mb: 3,
+          alignItems: 'center',
+          justifyContent: 'space-between'
+        }}>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Box sx={{ gap: 2, ml: 2 }}>
-              <FrutaSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
-            </Box>
-            <Box sx={{ gap: 2 }}>
+            <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+            <FrutaSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
+          </Box>
+          
+          <Box sx={{ gap: 2 }}>
               <Button
                   variant="contained"
                   startIcon={<AddIcon />}
@@ -142,10 +156,29 @@ export default function FrutasPage() {
                 Adicionar Fruta
               </Button>
             </Box>
-          </Box>
       </Box>
-
-      <Paper elevation={3} sx={{ p: 3, borderRadius: 2 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', gap: 2, mb: 2}}>
+        <Card sx={{ width: '30%' }}>
+            <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
+              <NumberIcon sx={{ padding: 1, fontSize: 32, color: '#616161', backgroundColor: alpha(theme.palette.primary.dark, 0.3), borderRadius: 20 }} />
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1}}>
+                <Typography variant="h5" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Total de Frutas</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{frutas.length}</Typography>
+              </Box>
+            </CardContent>
+        </Card>
+        <Card sx={{ width: '30%' }}>
+            <CardContent>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+            </CardContent>
+        </Card>
+        <Card sx={{ width: '30%' }}>
+            <CardContent>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+            </CardContent>
+        </Card>
+      </Box>
+      <Paper elevation={0} sx={{ height: "100%", p: 2, borderRadius: 2 }}>
         <FrutasTable
           frutas={filteredFrutas}
           onEdit={handleEditClick}
@@ -153,7 +186,6 @@ export default function FrutasPage() {
           onDetails={handleDetailsClick}
           />
       </Paper>
-
       <FrutaForm
         open={isFormOpen || !!editingFruta}
         onClose={() => {

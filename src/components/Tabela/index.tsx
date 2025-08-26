@@ -1,18 +1,12 @@
 import {
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Paper,
-  IconButton,
   Box,
   Typography,
+  Chip,
+  IconButton,
   Menu,
   MenuItem,
-  TablePagination,
-  Chip,
+  ListItemIcon,
+  ListItemText,
 } from "@mui/material";
 import { 
   EditOutlined as EditIcon, 
@@ -20,10 +14,11 @@ import {
   VisibilityOutlined as InfoIcon,
   CheckCircle as CheckCircleIcon,
   Cancel as CancelIcon,
-  MoreVert as MoreVertIcon
+  MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
-import { useState } from "react";
-import { useTheme } from "@mui/material/styles";
+import { DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
+import { ptBR } from '@mui/x-data-grid/locales';
+import { useState } from 'react';
 
 export interface Fruta {
   id: number;
@@ -42,29 +37,16 @@ interface FrutasTableProps {
 }
 
 export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: FrutasTableProps) {
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(5);
+  const [paginationModel, setPaginationModel] = useState({
+    pageSize: 5,
+    page: 0,
+  });
 
-  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
-  const [selectedId, setSelectedId] = useState<number | null>(null);
-
-  const handleClickMenu = (event: React.MouseEvent<HTMLElement>, id: number) => {
-    setAnchorEl(event.currentTarget);
-    setSelectedId(id);
-  };
-
-  const handleCloseMenu = () => {
-    setAnchorEl(null);
-    setSelectedId(null);
-  };
-
-  const handleChangePage = (_: unknown, newPage: number) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setRowsPerPage(parseInt(event.target.value, 10));
-    setPage(0);
+  const formatCurrency = (value: number) => {
+    return new Intl.NumberFormat('pt-BR', {
+      style: 'currency',
+      currency: 'BRL'
+    }).format(value);
   };
 
   const formatDate = (dateString: string) => {
@@ -83,161 +65,236 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     }
   };
 
-  const theme = useTheme();
+  const columns: GridColDef[] = [
+    { 
+      field: 'fruta', 
+      headerName: 'Fruta',
+      width: 150,
+      flex: 0.5,
+      disableColumnMenu: true,
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant="subtitle1" color="text.primary" fontWeight={500} >
+          {params.value}
+        </Typography>
+      )
+    },
+    { 
+      field: 'valor', 
+      headerName: 'Valor', 
+      width: 150,
+      flex: 0.5,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant="body1" color="primary.main" fontWeight={500} sx={{ textAlign: 'center' }}>
+          {formatCurrency(params.value)}
+        </Typography>
+      )
+    },
+    { 
+      field: 'dataVencimento', 
+      headerName: 'Vencimento', 
+      width: 150,
+      flex: 0.5,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        <Typography variant="body2" color="text.secondary">
+          {formatDate(params.value.toString())}
+        </Typography>
+      )
+    },
+    { 
+      field: 'status', 
+      headerName: 'Status', 
+      width: 150,
+      flex: 0.5,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params: GridRenderCellParams) => (
+        <Chip
+          icon={params.value === 'Ativo' ? <CheckCircleIcon /> : <CancelIcon />}
+          label={params.value}
+          variant="outlined"
+          sx={{
+            color: params.value === 'Ativo' ? 'success.main' : 'error.main',
+            borderColor: params.value === 'Ativo' ? 'success.main' : 'error.main',
+            '& .MuiChip-icon': {
+              color: params.value === 'Ativo' ? 'success.main' : 'error.main',
+            },
+          }}
+        />
+      )
+    },
+    {
+      field: 'actions',
+      headerName: 'Ações',
+      width: 150,
+      flex: 0.3,
+      sortable: false,
+      filterable: false,
+      disableColumnMenu: true,
+      headerAlign: 'center',
+      align: 'center',
+      renderCell: (params) => (
+        <Box sx={{ display: 'flex', justifyContent: 'center', width: '100%' }}>
+          <IconButton
+            onClick={(e) => handleMenuOpen(e, params.row.id)}
+            size="small"
+            color="inherit"
+            aria-label="opções"
+          >
+            <MoreVertIcon fontSize="small" />
+          </IconButton>
+        </Box>
+      ),
+    },
+  ];
+
+  const rowHeight = 60;
+  const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
+
+  const handleMenuOpen = (event: React.MouseEvent<HTMLElement>, id: number) => {
+    event.stopPropagation();
+    setAnchorEl(event.currentTarget);
+    setSelectedId(id);
+  };
+
+  const handleMenuClose = () => {
+    setAnchorEl(null);
+    setSelectedId(null);
+  };
+
+  const handleAction = (action: (id: number) => void) => {
+    if (selectedId !== null) {
+      action(selectedId);
+      handleMenuClose();
+    }
+  };
+
+  const headerHeight = 56;
+  const footerHeight = 53;
+  const totalHeight = Math.max(
+    Math.min(
+      Math.min(frutas.length, paginationModel.pageSize) * rowHeight + headerHeight + footerHeight,
+      600
+    ),
+    headerHeight + footerHeight + rowHeight
+  );
 
   const tableContent = (
-    <Box>
-      <TableContainer 
-        component={Paper} 
-        elevation={0}
-      >
-        <Table>
-          <TableHead>
-            <TableRow 
-              sx={{ 
-                color: theme.palette.primary.contrastText,
-                fontWeight: 600,
-              }}
-            >
-              <TableCell align="left">Fruta</TableCell>
-              <TableCell align="center">Valor</TableCell>
-              <TableCell align="center">Vencimento</TableCell>
-              <TableCell align="center">Status</TableCell>
-              <TableCell align="right">Ações</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? frutas.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-              : frutas
-            ).map((fruta: Fruta) => (
-              <TableRow
-                key={fruta.id}
-                sx={{
-                  '&:nth-of-type(odd)': {
-                    backgroundColor: theme.palette.grey[50],
-                  },
-                  '&:last-child td, &:last-child th': { border: 0 },
-                  '&:hover': {
-                    backgroundColor: theme.palette.action.hover,
-                    '& .MuiButton-root': {
-                      color: theme.palette.primary.main,
-                    },
-                  },
-                }}
-              >
-                <TableCell component="th" scope="row">
-                  <Typography variant="subtitle1" color="text.primary" fontWeight={500}>
-                    {fruta.fruta}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="body1" color="primary.main" fontWeight={500}>
-                    {new Intl.NumberFormat('pt-BR', {
-                      style: 'currency',
-                      currency: 'BRL'
-                    }).format(fruta.valor)}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Typography variant="body2" color="text.secondary">
-                    {formatDate(fruta.dataVencimento.toString())}
-                  </Typography>
-                </TableCell>
-                <TableCell align="center">
-                  <Chip
-                    icon={fruta.status === 'Ativo' ? <CheckCircleIcon /> : <CancelIcon />}
-                    label={fruta.status}
-                    color={fruta.status === 'Ativo' ? 'success' : 'error'}
-                    size="small"
-                    variant="outlined"
-                    sx={{
-                      '& .MuiChip-icon': {
-                        color: fruta.status === 'Ativo' ? 'success.main' : 'error.main',
-                      },
-                    }}
-                  />
-                </TableCell>
-                <TableCell align="right">
-                  <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-                    <IconButton
-                      size="small"
-                      onClick={(e) => handleClickMenu(e, fruta.id)}
-                      sx={{ 
-                        color: theme.palette.text.secondary,
-                        '&:hover': {
-                          backgroundColor: theme.palette.action.hover,
-                        },
-                      }}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                  </Box>
-                </TableCell>
-              </TableRow>
-            ))}
-          </TableBody>
-        </Table>
-      </TableContainer>
-
-      <TablePagination
-        rowsPerPageOptions={[5, 10, 25]}
-        component="div"
-        count={frutas.length}
-        rowsPerPage={rowsPerPage}
-        page={page}
-        onPageChange={handleChangePage}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        labelRowsPerPage="Itens por página:"
-        labelDisplayedRows={({ from, to, count }) =>
-          `${from}–${to} de ${count !== -1 ? count : `mais de ${to}`}`
-        }
+    <Box sx={{ width: '100%', minHeight: '200px', height: totalHeight }}>
+      <DataGrid
+        rows={frutas}
+        columns={columns}
+        paginationModel={paginationModel}
+        onPaginationModelChange={setPaginationModel}
+        pageSizeOptions={[5, 10, 25]}
+        disableRowSelectionOnClick
+        disableColumnMenu
+        disableColumnFilter
+        disableMultipleRowSelection
+        localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+        slots={{
+          toolbar: GridToolbar,
+        }}
+        rowHeight={rowHeight}
         sx={{
-          mt: 2,
-          '& .MuiTablePagination-selectLabel, & .MuiTablePagination-displayedRows, & .MuiTablePagination-input': {
-            color: 'text.secondary',
-            fontSize: '0.875rem',
-          },
-          '& .MuiSvgIcon-root': {
-            color: theme.palette.primary.main,
-          },
-          '& .MuiButtonBase-root.Mui-selected': {
-            backgroundColor: theme.palette.primary.main,
-            color: theme.palette.primary.contrastText,
-            '&:hover': {
-              backgroundColor: theme.palette.primary.dark,
+          border: 'none',
+          borderRadius: 2,
+          bgcolor: '#ffffff',
+          '& .MuiDataGrid-cell': {
+            cursor: 'default',
+            display: 'flex',
+            alignItems: 'center',
+            padding: '8px 16px',
+            '&:focus, &:focus-within, &:active': {
+              outline: 'none !important',
+            },
+            '& .MuiDataGrid-cellContent': {
+              pointerEvents: 'auto',
             },
           },
+          '& .MuiDataGrid-row': {
+            '&:hover': {
+              backgroundColor: '#F5F5F5',
+            },
+            '&.Mui-selected': {
+              backgroundColor: 'transparent',
+              '&:hover': {
+                backgroundColor: 'transparent',
+              },
+            },
+          },
+          '& .MuiDataGrid-columnHeaders': {
+            backgroundColor: '#F5F5F5',
+            '& .MuiDataGrid-columnHeader': {
+              '&:focus, &:focus-within, &:active': {
+                outline: 'none !important',
+              },
+              '&:hover': {
+                backgroundColor: '#F5F5F5 !important',
+              },
+              '& .MuiDataGrid-columnHeaderTitleContainer': {
+                pointerEvents: 'none',
+              },
+            },
+            '& .MuiDataGrid-columnSeparator': {
+              display: 'none !important',
+            },
+          },
+          '& .MuiDataGrid-columnHeaderTitle': {
+            fontWeight: 'bold',
+            fontSize: '16px',
+            color: '#616161',
+          },
+          '& .MuiTablePagination-root': {
+            color: '#616161',
+          },
+          '& .MuiInputBase-root': {
+            color: '#616161',
+          },
         }}
-      />   
-      <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleCloseMenu}>
-        <MenuItem
-          onClick={() => {
-              if (selectedId !== null) onDetails(selectedId);
-              handleCloseMenu();
-          }}
-        >
-          <InfoIcon sx={{ mr: 1 }}/>
-          Detalhes
+      />
+      <Menu
+        anchorEl={anchorEl}
+        open={Boolean(anchorEl)}
+        onClose={handleMenuClose}
+        onClick={(e) => e.stopPropagation()}
+        PaperProps={{
+          elevation: 6,
+          sx: {
+            minWidth: '120px',
+          },
+        }}
+      >
+        <MenuItem onClick={() => handleAction(onDetails)}>
+          <ListItemIcon>
+            <InfoIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ fontWeight: 'bold' }}>Detalhes</ListItemText>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            if (selectedId !== null) onEdit(selectedId);
-            handleCloseMenu();
-          }}
-        >
-          <EditIcon sx={{ mr: 1 }}/>
-          Editar
+        <MenuItem onClick={() => handleAction(onEdit)}>
+          <ListItemIcon>
+            <EditIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ fontWeight: 'bold' }}>Editar</ListItemText>
         </MenuItem>
-        <MenuItem
-          onClick={() => {
-            if (selectedId !== null) onDelete(selectedId);
-            handleCloseMenu();
-          }}
-          sx={{ color: "error.main" }}
-        >
-          <DeleteIcon sx={{ mr: 1 }}/>
-          Excluir
+        <MenuItem onClick={() => handleAction(onDelete)} sx={{ color: 'error.main' }}>
+          <ListItemIcon sx={{ color: 'error.main' }}>
+            <DeleteIcon fontSize="small" />
+          </ListItemIcon>
+          <ListItemText sx={{ fontWeight: 'bold' }}>Excluir</ListItemText>
         </MenuItem>
       </Menu>
     </Box>

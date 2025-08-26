@@ -167,7 +167,7 @@ export default function PrimarySearchAppBar({ color = 'primary', ...props }: Pri
             </IconButton>
 
             <Typography
-              variant="h6"
+              variant="h5"
               noWrap
               sx={{ display: { xs: "none", sm: "block" } }}
             >
