@@ -32,4 +32,8 @@ export const ptBR = {
     "disponivel": "Disponível",
     "indisponivel": "Indisponível",
     "ListaDeFrutas": "Lista de Frutas",
+    "acoes": "Ações",
+    "dataVencimento": "Data de Vencimento",
+    "fruta": "Fruta",
+    "temcertezaque": "Tem certeza que deseja excluir a fruta: ",
 };

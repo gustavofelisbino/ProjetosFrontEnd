@@ -74,10 +74,15 @@ const StyledInputBase = styled(InputBase)(({ theme }) => ({
 }));
 
 interface PrimarySearchAppBarProps extends MuiAppBarProps {
+  color?: 'primary' | 'secondary' | 'default';
+  title?: string;
+  onSearchChange?: (value: string) => void;
+  searchValue?: string;
 }
 
-export default function PrimarySearchAppBar({ color = 'primary', ...props }: PrimarySearchAppBarProps) {
+export default function PrimarySearchAppBar({ color = 'primary', title, onSearchChange, searchValue, ...props }: PrimarySearchAppBarProps) {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
+  const [searchQuery, setSearchQuery] = useState(searchValue || '');
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const isMenuOpen = Boolean(anchorEl);
@@ -138,14 +143,14 @@ export default function PrimarySearchAppBar({ color = 'primary', ...props }: Pri
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ flexGrow: 1, width: '100%', '& .MuiAppBar-root': { minHeight: '64px' } }}>
-        <MuiAppBar 
-          position="static" 
-          color={color} 
-          {...props} 
+        <MuiAppBar
+          position="static"
+          color={color}
+          {...props}
           elevation={0}
-          sx={{ 
-            ...props.sx, 
-            '&.MuiAppBar-root': { 
+          sx={{
+            ...props.sx,
+            '&.MuiAppBar-root': {
               padding: 0,
               margin: 0,
               minHeight: '64px!important',
@@ -160,18 +165,19 @@ export default function PrimarySearchAppBar({ color = 'primary', ...props }: Pri
           <Toolbar disableGutters>
             <IconButton size="large" edge="start" color="inherit" sx={{ mr: 2 }}>
               <SidebarUnderHeader open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-              <MenuIcon 
-                onClick={() => setSidebarOpen((prev) => !prev)} 
+              <MenuIcon
+                onClick={() => setSidebarOpen((prev) => !prev)}
                 sx={{ cursor: 'pointer' }}
               />
             </IconButton>
 
             <Typography
-              variant="h5"
+              variant="h6"
               noWrap
-              sx={{ display: { xs: "none", sm: "block" } }}
+              component="div"
+              sx={{ display: { xs: 'none', sm: 'block' } }}
             >
-              Projeto React
+              {title || 'Projetos React'}
             </Typography>
 
             <Box
@@ -187,8 +193,15 @@ export default function PrimarySearchAppBar({ color = 'primary', ...props }: Pri
                   <SearchIcon />
                 </SearchIconWrapper>
                 <StyledInputBase
-                  placeholder="Procurar..."
-                  inputProps={{ "aria-label": "search" }}
+                  placeholder="Search…"
+                  inputProps={{ 'aria-label': 'search' }}
+                  value={searchQuery}
+                  onChange={(e) => {
+                    setSearchQuery(e.target.value);
+                    if (onSearchChange) {
+                      onSearchChange(e.target.value);
+                    }
+                  }}
                 />
               </Search>
             </Box>

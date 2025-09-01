@@ -34,4 +34,7 @@ export const enUS = {
     "disponivel": "Available",
     "indisponivel": "Unavailable",
     "ListaDeFrutas": "List of Fruits",
+    "dataVencimento": "Expiry Date",
+    "fruta": "Fruit",
+    "temcertezaque": "Are you sure you want to delete the fruit: ",
 };

@@ -1,6 +1,6 @@
 export const enUS = {
     "acoes": "Actions",
-    "detalhes": "Details",
+    "Detalhes": "Details",
     "editar": "Edit",
     "excluir": "Delete",
     "fruta": "Fruit",
@@ -13,4 +13,5 @@ export const enUS = {
     "adicionaraocarrinho": "Add to Cart",
     "cancelar": "Cancel",
     "temcertezaque": "Are you sure you want to delete the fruit: ",
+    "datavencimento": "Expiry Date",
 };

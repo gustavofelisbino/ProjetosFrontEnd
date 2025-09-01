@@ -1,6 +1,6 @@
 export const ptBR = {
     "acoes": "Ações",
-    "detalhes": "Detalhes",
+    "Detalhes": "Detalhes",
     "editar": "Editar",
     "excluir": "Excluir",
     "fruta": "Fruta",
@@ -13,4 +13,5 @@ export const ptBR = {
     "adicionaraocarrinho": "Adicionar ao carrinho",
     "cancelar": "Cancelar",
     "temcertezaque": "Tem certeza que deseja excluir a fruta: ",
+    "datavencimento": "Data de Vencimento",
 };
