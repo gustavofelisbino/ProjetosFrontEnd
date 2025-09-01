@@ -17,8 +17,10 @@ import {
   MoreVert as MoreVertIcon,
 } from '@mui/icons-material';
 import { DataGrid, type GridColDef, type GridRenderCellParams, GridToolbar } from '@mui/x-data-grid';
-import { ptBR } from '@mui/x-data-grid/locales';
+import { enUS, ptBR } from '@mui/x-data-grid/locales';
 import { useState } from 'react';
+import { useTranslation } from "react-i18next";
+import i18n from "../../i18n";
 
 export interface Fruta {
   id: number;
@@ -37,6 +39,7 @@ interface FrutasTableProps {
 }
 
 export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: FrutasTableProps) {
+  const { t } = useTranslation();
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 5,
     page: 0,
@@ -68,7 +71,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
   const columns: GridColDef[] = [
     { 
       field: 'fruta', 
-      headerName: 'Fruta',
+      headerName: t('fruta'),
       width: 150,
       flex: 0.5,
       disableColumnMenu: true,
@@ -80,7 +83,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     },
     { 
       field: 'valor', 
-      headerName: 'Valor', 
+      headerName: t('valor'), 
       width: 150,
       flex: 0.5,
       sortable: false,
@@ -96,7 +99,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     },
     { 
       field: 'dataVencimento', 
-      headerName: 'Vencimento', 
+      headerName: t('dataVencimento'), 
       width: 150,
       flex: 0.5,
       sortable: false,
@@ -112,7 +115,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     },
     { 
       field: 'status', 
-      headerName: 'Status', 
+      headerName: t('status'), 
       width: 150,
       flex: 0.5,
       sortable: false,
@@ -137,7 +140,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
     },
     {
       field: 'actions',
-      headerName: 'Ações',
+      headerName: t('acoes'),
       width: 150,
       flex: 0.3,
       sortable: false,
@@ -204,7 +207,7 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
         disableColumnMenu
         disableColumnFilter
         disableMultipleRowSelection
-        localeText={ptBR.components.MuiDataGrid.defaultProps.localeText}
+        localeText={i18n.language === 'pt-BR' ? ptBR.components.MuiDataGrid.defaultProps.localeText : enUS.components.MuiDataGrid.defaultProps.localeText}
         slots={{
           toolbar: GridToolbar,
         }}
@@ -282,19 +285,19 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
           <ListItemIcon>
             <InfoIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText sx={{ fontWeight: 'bold' }}>Detalhes</ListItemText>
+          <ListItemText sx={{ fontWeight: 'bold' }}>{t('detalhes')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => handleAction(onEdit)}>
           <ListItemIcon>
             <EditIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText sx={{ fontWeight: 'bold' }}>Editar</ListItemText>
+          <ListItemText sx={{ fontWeight: 'bold' }}>{t('editar')}</ListItemText>
         </MenuItem>
         <MenuItem onClick={() => handleAction(onDelete)} sx={{ color: 'error.main' }}>
           <ListItemIcon sx={{ color: 'error.main' }}>
             <DeleteIcon fontSize="small" />
           </ListItemIcon>
-          <ListItemText sx={{ fontWeight: 'bold' }}>Excluir</ListItemText>
+          <ListItemText sx={{ fontWeight: 'bold' }}>{t('excluir')}</ListItemText>
         </MenuItem>
       </Menu>
     </Box>

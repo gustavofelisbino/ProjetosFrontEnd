@@ -2,6 +2,8 @@ import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface Fruta {
   dataVencimento: Date;
@@ -18,66 +20,74 @@ interface FrutaListProps {
   loading?: boolean;
 }
 
-export function FrutaList({ frutas, onEdit, onDelete, loading = false }: FrutaListProps) {
-  const columns: GridColDef[] = [
+export const FrutaList: FC<FrutaListProps> = ({ frutas, onEdit, onDelete, loading = false }) => {
+    const { t } = useTranslation();
+    const columns: GridColDef[] = [
     { 
       field: 'id', 
-      headerName: 'ID', 
+      headerName: t('id'), 
       width: 150,
       renderCell: (params) => (
-        <div style={{ display: 'flex', gap: '8px', alignContent: 'center', justifyContent: 'center', color: 'black'}}>
+        <Box sx={{ display: 'flex', justifyContent: 'center', color: 'black', width: '100%' }}>
           {params.value}
-        </div>
+        </Box>
       ),
     },
     { 
       field: 'fruta', 
-      headerName: 'Fruta', 
+      headerName: t('fruta'), 
       width: 250,
     },
     { 
       field: 'valor', 
-      headerName: 'Valor', 
+      headerName: t('valor'), 
       width: 250,
-      valueFormatter: (params: { value: number }) => {
-        return new Intl.NumberFormat('pt-BR', {
+      valueFormatter: (params: { value: number }) =>
+        new Intl.NumberFormat('pt-BR', {
           style: 'currency',
           currency: 'BRL'
-        }).format(Number(params.value) || 0);
-      }
+        }).format(Number(params.value) || 0),
     },
     {
       field: 'actions',
-      headerName: 'Ações',
-      width: 250,
+      headerName: t('acoes'),
+      width: 300,
       renderCell: (params) => (
-        <div style={{ display: 'flex', gap: '8px', justifyContent: 'flex-end', color: 'black' }}>
+        <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
           <Button
-            variant="outlined"
+            variant="contained"
             size="small"
             startIcon={<EditIcon />}
             onClick={() => onEdit(params.row.id)}
-            sx={{ fontFamily: 'Roboto', backgroundColor: 'primary.main', color: 'white', padding: '8px 16px', alignContent: 'center', justifyContent: 'center', width: '100%' }}
+            sx={{ fontFamily: 'Roboto' }}
           >
-            Editar
+            {t('editar')}
           </Button>
           <Button
-            variant="outlined"
+            variant="contained"
             color="error"
             size="small"
             startIcon={<DeleteIcon />}
             onClick={() => onDelete(params.row.id)}
-            sx={{ fontFamily: 'Roboto', backgroundColor: 'error.main', color: 'white', padding: '8px 16px', alignContent: 'center', justifyContent: 'center', width: '100%' }}
+            sx={{ fontFamily: 'Roboto' }}
           >
-            Excluir
+            {t('excluir')}
           </Button>
-        </div>
+        </Box>
       ),
     },
   ];
 
   return (
-    <Box sx={{ height: 500, width: '100%', backgroundColor: 'white', borderRadius: 1, boxShadow: 1 }}>
+    <Box
+      sx={{
+        height: 500,
+        width: '100%',
+        backgroundColor: 'white',
+        borderRadius: 1,
+        boxShadow: 1,
+      }}
+    >
       <DataGrid
         rows={frutas}
         columns={columns}
@@ -97,7 +107,8 @@ export function FrutaList({ frutas, onEdit, onDelete, loading = false }: FrutaLi
         sx={{
           '& .MuiDataGrid-columnHeaders': {
             backgroundColor: 'primary.main',
-            color: 'black'
+            color: 'black',
+            fontWeight: 'bold',
           },
           '& .MuiDataGrid-cell': {
             padding: '8px 16px',
@@ -108,4 +119,6 @@ export function FrutaList({ frutas, onEdit, onDelete, loading = false }: FrutaLi
       />
     </Box>
   );
-}
+};
+
+export default FrutaList;

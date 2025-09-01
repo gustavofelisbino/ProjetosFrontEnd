@@ -5,10 +5,13 @@ import { AppRoutes } from './routes';
 import { FrutasProvider } from './contexts/FrutasContext';
 import { CarrinhoProvider } from './contexts/CarrinhoContext';
 import ErrorBoundary from './components/ErrorBoundary';
+import i18n from './i18n';
+import { I18nextProvider } from 'react-i18next';
 
 export const App = () => {
   return (
     <ThemeProvider theme={theme}>
+      <I18nextProvider i18n={i18n}>
       <ErrorBoundary>
         <BrowserRouter>
           <FrutasProvider>
@@ -18,6 +21,7 @@ export const App = () => {
           </FrutasProvider>
         </BrowserRouter>
       </ErrorBoundary>
+      </I18nextProvider>
     </ThemeProvider>
   );
 };

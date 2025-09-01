@@ -61,12 +61,12 @@ const SidebarUnderHeader: React.FC<SidebarUnderHeaderProps> = ({
         />
         <SidebarButton
           icon={<GroupsIcon sx={{ color: "#0277BD" }} />}
-          text="Carrinho"
+          text="Axios"
           onClick={() => {
-            handleSelect("Carrinho");
-            navigate("/carrinho");
+            handleSelect("Axios");
+            navigate("/axios");
           }}
-          selected={selected === "Carrinho"}
+          selected={selected === "Axios"}
           highlightColor="#0277BD"
         />
       </Box>

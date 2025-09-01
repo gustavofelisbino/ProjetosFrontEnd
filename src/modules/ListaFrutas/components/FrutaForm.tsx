@@ -2,12 +2,15 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions, 
   Button, TextField, Box, InputAdornment, Paper, 
   FormControl, InputLabel, Select, MenuItem, FormHelperText,
-  Card, CardContent } from "@mui/material";
+  Card, CardContent 
+} from "@mui/material";
 import { useForm, Controller } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { useEffect } from 'react';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
+import type { FC } from "react";
+import { useTranslation } from 'react-i18next';
 
 type FormData = {
   fruta: string;
@@ -41,17 +44,17 @@ interface FrutaFormProps {
   onSubmit: (data: FormData) => void;
   initialData?: FormData;
   title: string;
-  descricao?: string;
 }
 
-export function FrutaForm({ open, onClose, onSubmit, initialData, title }: FrutaFormProps) {
+export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initialData, title }) => {
+  const { t } = useTranslation();
   const { control, handleSubmit, reset, formState: { errors } } = useForm<FormData>({
     resolver: yupResolver(frutaSchema) as any,
     defaultValues: {
       fruta: '',
       dataVencimento: new Date().toISOString().split('T')[0],
       valor: '',
-      status: 'Ativo' as const,
+      status: 'Ativo',
       descricao: ''
     },
     mode: 'onChange'
@@ -87,8 +90,8 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
     onChange(formattedValue);
   };
 
-  const handleFormSubmit = (data: any) => {
-    onSubmit(data as FormData);
+  const handleFormSubmit = (data: FormData) => {
+    onSubmit(data);
     onClose();
   };
 
@@ -105,111 +108,115 @@ export function FrutaForm({ open, onClose, onSubmit, initialData, title }: Fruta
             {title}
           </Box>
         </DialogTitle>
+        
         <DialogContent>
           <Card sx={{ p: 0 }}>
             <CardContent>
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', mb: 2 }}>
-              <Box sx={{ display: 'flex', gap: 2 }}>
-                <Controller
-                  name="fruta"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      label="Nome da Fruta *"
-                      fullWidth
-                      margin="normal"
-                      error={!!errors.fruta}
-                      helperText={errors.fruta?.message as string}
-                    />
-                  )}
-                />
-                <Controller
-                  name="dataVencimento"
-                  control={control}
-                  render={({ field }) => (
-                    <TextField
-                      {...field}
-                      type="date"
-                      label="Data de Vencimento *"
-                      margin="normal"
-                      InputLabelProps={{
-                        shrink: true,
-                      }}
-                      fullWidth
-                    />
-                  )}
-                />
-            </Box>
-            </Box>
-          <Controller
-              name="valor"
-              control={control}
-              render={({ field: { onChange, value, ...field } }) => (
-                <TextField
-                  {...field}
-                  value={value || ''}
-                  onChange={(e) => handleValueChange(e, onChange)}
-                  label="Valor *"
-                  placeholder="0,00"
-                  fullWidth
-                  error={!!errors.valor}
-                  helperText={errors.valor?.message as string}
-                  InputProps={{
-                    startAdornment: <InputAdornment position="start">R$</InputAdornment>,
-                    inputMode: 'numeric'
-                  }}
-                />
-              )}
-            />
-            
-            <Controller
-              name="status"
-              control={control}
-              render={({ field }) => (
-                <FormControl fullWidth margin="normal" error={!!errors.status}>
-                  <InputLabel>Status</InputLabel>
-                  <Select
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', mb: 2 }}>
+                <Box sx={{ display: 'flex', gap: 2 }}>
+                  <Controller
+                    name="fruta"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        label={t('nomeDaFruta')}
+                        fullWidth
+                        margin="normal"
+                        error={!!errors.fruta}
+                        helperText={errors.fruta?.message}
+                      />
+                    )}
+                  />
+                  <Controller
+                    name="dataVencimento"
+                    control={control}
+                    render={({ field }) => (
+                      <TextField
+                        {...field}
+                        type="date"
+                        label={t('dataDeVencimento')}
+                        margin="normal"
+                        InputLabelProps={{ shrink: true }}
+                        fullWidth
+                      />
+                    )}
+                  />
+                </Box>
+              </Box>
+
+              <Controller
+                name="valor"
+                control={control}
+                render={({ field: { onChange, value, ...field } }) => (
+                  <TextField
                     {...field}
-                    label="Status"
-                    value={field.value || 'Ativo'}
-                    onChange={(e) => field.onChange(e.target.value as 'Ativo' | 'Inativo')}
-                  >
-                    <MenuItem value="Ativo">Disponível</MenuItem>
-                    <MenuItem value="Inativo">Indisponível</MenuItem>
-                  </Select>
-                  {errors.status && (
-                    <FormHelperText>{errors.status.message as string}</FormHelperText>
-                  )}
-                </FormControl>
-              )}
-            />
-            <Controller
-              name="descricao"
-              control={control}
-              render={({ field }) => (
-                <TextField
-                  {...field}
-                  label="Descrição"
-                  margin="normal"
-                  fullWidth
-                  error={!!errors.descricao}
-                  helperText={errors.descricao?.message as string}
-                />
-              )}
-            />
-          </CardContent>
-        </Card>
+                    value={value || ''}
+                    onChange={(e) => handleValueChange(e, onChange)}
+                    label={t('valor')}
+                    placeholder="0,00"
+                    fullWidth
+                    error={!!errors.valor}
+                    helperText={errors.valor?.message}
+                    InputProps={{
+                      startAdornment: <InputAdornment position="start">R$</InputAdornment>,
+                      inputMode: 'numeric'
+                    }}
+                  />
+                )}
+              />
+              
+              <Controller
+                name="status"
+                control={control}
+                render={({ field }) => (
+                  <FormControl fullWidth margin="normal" error={!!errors.status}>
+                    <InputLabel>{t('status')}</InputLabel>
+                    <Select
+                      {...field}
+                      label={t('status')}
+                      value={field.value || 'Ativo'}
+                      onChange={(e) => field.onChange(e.target.value as 'Ativo' | 'Inativo')}
+                    >
+                      <MenuItem value="Ativo">{t('disponivel')}</MenuItem>
+                      <MenuItem value="Inativo">{t('indisponivel')}</MenuItem>
+                    </Select>
+                    {errors.status && (
+                      <FormHelperText>{errors.status.message}</FormHelperText>
+                    )}
+                  </FormControl>
+                )}
+              />
+
+              <Controller
+                name="descricao"
+                control={control}
+                render={({ field }) => (
+                  <TextField
+                    {...field}
+                    label={t('descricao')}
+                    margin="normal"
+                    fullWidth
+                    error={!!errors.descricao}
+                    helperText={errors.descricao?.message}
+                  />
+                )}
+              />
+            </CardContent>
+          </Card>
         </DialogContent>
+
         <DialogActions sx={{ p: 3 }}>
           <Button type="button" onClick={onClose}>
-            Cancelar
+            {t('cancelar')}
           </Button>
           <Button type="submit" variant="contained" color="primary">
-            Salvar
+            {t('salvar')}
           </Button>
         </DialogActions>
       </Paper>
     </Dialog>
   );
-}
+};
+
+export default FrutaForm;

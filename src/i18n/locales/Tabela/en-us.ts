@@ -1,0 +1,16 @@
+export const enUS = {
+    "acoes": "Actions",
+    "detalhes": "Details",
+    "editar": "Edit",
+    "excluir": "Delete",
+    "fruta": "Fruit",
+    "valor": "Value",
+    "dataVencimento": "Expiry Date",
+    "status": "Status",
+    "descricao": "Description",
+    "disponivel": "Available",
+    "indisponivel": "Unavailable",
+    "adicionaraocarrinho": "Add to Cart",
+    "cancelar": "Cancel",
+    "temcertezaque": "Are you sure you want to delete the fruit: ",
+};

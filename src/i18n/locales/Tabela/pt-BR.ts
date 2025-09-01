@@ -1,0 +1,16 @@
+export const ptBR = {
+    "acoes": "Ações",
+    "detalhes": "Detalhes",
+    "editar": "Editar",
+    "excluir": "Excluir",
+    "fruta": "Fruta",
+    "valor": "Valor",
+    "dataVencimento": "Data de Vencimento",
+    "status": "Status",
+    "descricao": "Descrição",
+    "disponivel": "Disponível",
+    "indisponivel": "Indisponível",
+    "adicionaraocarrinho": "Adicionar ao carrinho",
+    "cancelar": "Cancelar",
+    "temcertezaque": "Tem certeza que deseja excluir a fruta: ",
+};

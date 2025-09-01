@@ -1,15 +1,15 @@
 import { Box, List, ListItem, Paper, Typography } from '@mui/material';
 import { useCarrinho } from '../../../contexts/CarrinhoContext';
 import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface CarrinhoItensProps {
   mostrar: boolean;
 }
 
 export const CarrinhoItens: FC<CarrinhoItensProps> = ({ mostrar }) => {
-  const { itens } = useCarrinho();
-
-  const valorTotal = itens.reduce((total, item) => total + item.preco * item.quantidade, 0);
+    const { t } = useTranslation();
+    const { itens } = useCarrinho();
 
   if (!mostrar) return null;
 
@@ -25,12 +25,12 @@ export const CarrinhoItens: FC<CarrinhoItensProps> = ({ mostrar }) => {
         }}
       >
         <Typography variant="h6" sx={{ fontWeight: 'bold', mb: 2 }}>
-          Itens no Carrinho
+          {t('itensNoCarrinho')}
         </Typography>
 
         {itens.length === 0 ? (
           <Typography variant="body1" color="error" fontWeight="bold">
-            O carrinho está vazio
+            {t('carrinhoVazio')}
           </Typography>
         ) : (
           <List sx={{ width: '100%' }}>
@@ -55,9 +55,6 @@ export const CarrinhoItens: FC<CarrinhoItensProps> = ({ mostrar }) => {
                 </Box>
                 <Typography variant="subtitle1">
                   R$ {(item.preco * item.quantidade).toFixed(2)}
-                </Typography>
-                <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-                  Total: R$ {valorTotal.toFixed(2)}
                 </Typography>
               </ListItem>
             ))}

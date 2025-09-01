@@ -12,8 +12,10 @@ import { DialogDetalhes } from '../components/DialogDetalhes/DialogDetalhes';
 import { Numbers as NumberIcon } from '@mui/icons-material';
 import { alpha } from "@mui/material/styles";
 import theme from "../../../themes";
+import { useTranslation } from "react-i18next";
 
 export default function FrutasPage() {
+  const { t } = useTranslation();
   const { frutas = [], adicionarFruta, atualizarFruta, removerFruta } = useFrutas();
   const [searchTerm, setSearchTerm] = useState('');
   const [isFormOpen, setIsFormOpen] = useState(false);
@@ -135,7 +137,7 @@ export default function FrutasPage() {
           justifyContent: 'space-between'
         }}>
           <Box sx={{ display: 'flex', gap: 2 }}>
-            <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+            <Typography variant="h4" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{t('listaDeFrutas')}</Typography>
             <FrutaSearch searchTerm={searchTerm} onSearchChange={setSearchTerm} />
           </Box>
           
@@ -153,7 +155,7 @@ export default function FrutasPage() {
                   color: "primary.contrastText"
                 }}
               >
-                Adicionar Fruta
+                {t('adicionarFruta')}
               </Button>
             </Box>
       </Box>
@@ -162,19 +164,19 @@ export default function FrutasPage() {
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2}}>
               <NumberIcon sx={{ padding: 1, fontSize: 32, color: '#616161', backgroundColor: alpha(theme.palette.primary.dark, 0.3), borderRadius: 20 }} />
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1}}>
-                <Typography variant="h5" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Total de Frutas</Typography>
+                <Typography variant="h5" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{t('totalDeFrutas')}</Typography>
                 <Typography variant="h5" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{frutas.length}</Typography>
               </Box>
             </CardContent>
         </Card>
         <Card sx={{ width: '30%' }}>
             <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{t('ListaDeFrutas')}</Typography>
             </CardContent>
         </Card>
         <Card sx={{ width: '30%' }}>
             <CardContent>
-              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>Lista de Frutas</Typography>
+              <Typography variant="h6" fontWeight="bold" sx={{ fontFamily: 'Roboto', color: '#616161' }}>{t('ListaDeFrutas')}</Typography>
             </CardContent>
         </Card>
       </Box>
@@ -195,7 +197,6 @@ export default function FrutasPage() {
           onSubmit={handleSubmit}
           title={editingFruta ? 'Editar Fruta' : 'Adicionar Fruta'}
           initialData={editingFruta}
-          descricao={editingFruta?.descricao}
         />
 
         {frutaToDelete && (

@@ -9,15 +9,17 @@ import { CarrinhoItens } from '../components/CarrinhoItens';
 import { contadorReducer } from '../types';
 import type { FC } from 'react';
 import PrimarySearchAppBar from '../../../components/AppBar';
+import { useTranslation } from 'react-i18next';
 
 const initialState = { count: 0 };
 
 export const PaginaInicial: FC = () => {
-  const { frutas } = useFrutas();
-  const [frutaAtual, setFrutaAtual] = useState(frutas[0]);
-  const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
-  const [state, dispatch] = useReducer(contadorReducer, initialState);
-  const { limparCarrinho } = useCarrinho();
+    const { t } = useTranslation();
+    const { frutas } = useFrutas();
+    const [frutaAtual, setFrutaAtual] = useState(frutas[0]);
+    const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
+    const [state, dispatch] = useReducer(contadorReducer, initialState);
+    const { limparCarrinho } = useCarrinho();
 
   useEffect(() => {
     if (frutas.length > 0 && !frutaAtual) {
@@ -43,7 +45,7 @@ export const PaginaInicial: FC = () => {
   if (!frutaAtual) {
     return (
       <Box sx={{ p: 3, textAlign: 'center' }}>
-        <Typography variant="h6">Carregando frutas...</Typography>
+        <Typography variant="h6">{t('carregandoFrutas')}</Typography>
       </Box>
     );
   }
@@ -69,13 +71,16 @@ export const PaginaInicial: FC = () => {
 
         <Contador state={state} dispatch={dispatch} />
 
-        <Box sx={{ textAlign: 'center', width: '100%' }}>
+        <Box sx={{ textAlign: 'center', width: '100%', }}>
           <Typography variant="h5" gutterBottom>
-            {frutaAtual.fruta} - R$ {frutaAtual.valor.toFixed(2)}
+            {t('nomeDaFruta')}
+          </Typography>
+          <Typography variant="h5" color="primary.main" sx={{ mt: 1, mb: 2  }}>
+            {frutaAtual.fruta}
           </Typography>
           {frutaAtual.descricao && (
             <Typography variant="body1" color="text.secondary" sx={{ mb: 2 }}>
-              {frutaAtual.descricao}
+              {t('descricao')} {frutaAtual.descricao}
             </Typography>
           )}
           <FrutasActions frutaAtual={frutaAtual} onTrocar={handleTrocarFruta} />
@@ -95,7 +100,7 @@ export const PaginaInicial: FC = () => {
                 borderRadius: 2,
               }}
             >
-              Limpar Carrinho
+              {t('limparcarrinho')}
             </Button>
           </Box>
         )}

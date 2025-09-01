@@ -3,6 +3,7 @@ import { useCarrinho } from '../../../contexts/CarrinhoContext';
 import { BotaoPrimario } from './BotaoPrimario';
 import type { Fruta } from '../../../contexts/FrutasContext';
 import type { FC } from 'react';
+import { useTranslation } from 'react-i18next';
 
 interface FrutasActionsProps {
   frutaAtual: Fruta;
@@ -10,6 +11,7 @@ interface FrutasActionsProps {
 }
 
 export const FrutasActions: FC<FrutasActionsProps> = ({ frutaAtual, onTrocar }) => {
+    const { t } = useTranslation();
   const { adicionarItem } = useCarrinho();
 
   const handleAdicionarAoCarrinho = () => {
@@ -23,9 +25,9 @@ export const FrutasActions: FC<FrutasActionsProps> = ({ frutaAtual, onTrocar }) 
 
   return (
     <Box sx={{ display: 'flex', gap: 2, justifyContent: 'center' }}>
-      <BotaoPrimario onClick={onTrocar}>Trocar</BotaoPrimario>
+      <BotaoPrimario onClick={onTrocar}>{t('trocar')}</BotaoPrimario>
       <BotaoPrimario onClick={handleAdicionarAoCarrinho}>
-        Adicionar ao Carrinho
+        {t('adicionarAoCarrinho')}
       </BotaoPrimario>
     </Box>
   );
