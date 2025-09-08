@@ -1,8 +1,9 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
 import { theme } from "../../../themes";
 import { useNavigate } from "react-router-dom";
+import type { FC } from 'react';
 
-export default function MaterialUI () {
+export const MaterialUI: FC = () => {
     const navigate = useNavigate();
     const navigateToProjetoCompleto = () => navigate("/projeto-completo");
     return (

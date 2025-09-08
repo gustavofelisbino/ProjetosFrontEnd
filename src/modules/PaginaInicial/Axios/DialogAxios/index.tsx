@@ -5,18 +5,19 @@ import {
 } from "@mui/material";
 import { getFrutas, getFrutaById, deleteFruta, createFruta } from "../../../../api/frutas";
 import type { Fruta } from "../../../../api/frutas";
+import type { FC } from 'react';
 
-type Props = {
+type DialogAxiosProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
 };
 
-export default function DialogAxios({
+export const DialogAxios: FC<DialogAxiosProps> = ({
   renderTrigger,
   title = "Axios",
   desc = "Exemplo simples de requisições ao backend.",
-}: Props) {
+}: DialogAxiosProps) => {
   const [open, setOpen] = useState(false);
   const [frutas, setFrutas] = useState<Fruta[]>([]);
   const [idInput, setIdInput] = useState("1");

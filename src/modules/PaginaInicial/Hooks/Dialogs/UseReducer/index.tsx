@@ -3,21 +3,22 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseReducerProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseReducer({
+export const DialogUseReducer: FC<DialogUseReducerProps> = ({
   renderTrigger,
   title = "useReducer",
   desc = "useReducer ajuda a controlar estados mais complexos de forma organizada, parecido com o useState, mas com regras definidas.",
   code = `const [state, dispatch] = useReducer(reducer, initialState);
 return <button onClick={() => dispatch({ type: "increment" })}>{state}</button>;`,
-}: Props) {
+}: DialogUseReducerProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

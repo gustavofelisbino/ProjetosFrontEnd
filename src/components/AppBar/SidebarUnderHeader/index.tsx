@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Box, Slide } from "@mui/material";
 import SidebarButton from "../SidebarButton";
 import { useNavigate } from "react-router-dom";
 import { HomeOutlined as HomeIcon, AssignmentOutlined as AssignmentIcon, GroupsOutlined as GroupsIcon } from "@mui/icons-material";
+import type { FC } from 'react';
 
 type SidebarUnderHeaderProps = {
   open: boolean;
@@ -10,7 +11,7 @@ type SidebarUnderHeaderProps = {
   headerHeight?: number; 
 };
 
-const SidebarUnderHeader: React.FC<SidebarUnderHeaderProps> = ({
+export const SidebarUnderHeader: FC<SidebarUnderHeaderProps> = ({
   open,
   onClose,
   headerHeight = 64,

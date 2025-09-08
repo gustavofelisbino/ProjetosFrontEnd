@@ -1,4 +1,5 @@
 import { Chip } from "@mui/material";
+import type { FC } from 'react';
 
 type StatusType = "Disponível" | "Em estoque" | "Indisponível";
 
@@ -12,7 +13,7 @@ const statusColors: Record<StatusType, "success" | "default" | "error"> = {
   Indisponível: "error",
 };
 
-export default function StatusChip({ status }: StatusChipProps) {
+export const StatusChip: FC<StatusChipProps> = ({ status }) => {
   return (
     <Chip
       label={status}
@@ -22,3 +23,5 @@ export default function StatusChip({ status }: StatusChipProps) {
     />
   );
 }
+
+export default StatusChip;

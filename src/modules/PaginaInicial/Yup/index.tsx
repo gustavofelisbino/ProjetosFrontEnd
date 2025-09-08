@@ -1,8 +1,9 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import DialogYup from "./DialogYup"
+import { DialogYup } from "./DialogYup"
 import { theme } from "../../../themes";
+import type { FC } from 'react';
 
-export default function Yup () {
+export const Yup: FC = () => {
     return (
         <>
         <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>

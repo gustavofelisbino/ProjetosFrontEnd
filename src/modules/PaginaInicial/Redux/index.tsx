@@ -1,8 +1,9 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import DialogRedux from "./Dialogs/DialogRedux";
+import { DialogRedux } from "./Dialogs/DialogRedux";
 import { theme } from "../../../themes"
+import type { FC } from 'react';
 
-export default function Redux() {
+export const Redux: FC = () => {
     return (
         <>
         <Box sx={{ maxWidth: 1000, mx: "auto", p: 2 }}>

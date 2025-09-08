@@ -3,21 +3,22 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseStateProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseState({
+export const DialogUseState: FC<DialogUseStateProps> = ({
   renderTrigger,
   title = "useState",
   desc = "useState é uma forma simples de guardar e atualizar valores dentro de um componente. Sempre que o valor muda com setState, o React redesenha a tela automaticamente.",
   code = `const [count, setCount] = useState(0);
 return <button onClick={() => setCount(c => c + 1)}>{count}</button>;`,
-}: Props) {
+}: DialogUseStateProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

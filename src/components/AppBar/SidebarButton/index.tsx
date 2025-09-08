@@ -1,5 +1,6 @@
 import { Button, Box } from "@mui/material";
 import type { ReactNode } from "react";
+import type { FC } from 'react';
 
 type SidebarButtonProps = {
   icon: ReactNode;
@@ -10,7 +11,7 @@ type SidebarButtonProps = {
   highlightColor?: string; 
 };
 
-const SidebarButton = ({
+export const SidebarButton: FC<SidebarButtonProps> = ({
   icon,
   text,
   onClick,

@@ -3,6 +3,7 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
 type Props = {
   renderTrigger?: (open: () => void) => React.ReactNode;
@@ -11,14 +12,14 @@ type Props = {
   code?: string;
 };
 
-export default function DialogUseCallback({
+export const DialogUseCallback: FC<Props> = ({
   renderTrigger,
   title = "useCallback",
   desc = "useCallback memoriza uma função para evitar que ela seja recriada a cada renderização do componente.",
   code = `const handleClick = useCallback(() => {
   console.log("handleClick");
 }, []);`,
-}: Props) {
+}: Props) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

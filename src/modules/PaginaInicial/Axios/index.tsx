@@ -1,8 +1,8 @@
 import { Button, Typography, Box, Card, CardContent } from "@mui/material";
 import { theme } from "../../../themes";
-import DialogAxios from "./DialogAxios";
+import { DialogAxios } from "./DialogAxios";
 
-export default function Axios() {
+export const Axios = () => {
     return (
     <>
     <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>

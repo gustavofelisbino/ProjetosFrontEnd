@@ -1,11 +1,12 @@
 import { IconButton } from "@mui/material";
+import type { FC } from 'react';
 
 interface ButtonProps {
   icon: any;
   color?: any;
 }
 
-const CustomIconButtonHeaderInicio = (props: ButtonProps) => {
+export const CustomIconButtonHeaderInicio: FC<ButtonProps> = (props: ButtonProps) => {
   const { icon, color = "inherit" } = props;
   return <IconButton color={color}>{icon}</IconButton>;
 };

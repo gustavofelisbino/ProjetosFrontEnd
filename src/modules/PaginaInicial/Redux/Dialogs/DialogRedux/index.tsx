@@ -3,21 +3,22 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogReduxProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogRedux({
+export const DialogRedux: FC<DialogReduxProps> = ({
   renderTrigger,
   title = "Redux",
   desc = "Redux centraliza o estado da aplicação em um só lugar, tornando seu gerenciamento previsível e fácil de manter.",
   code = `const store = createStore(reducer);
 return <Provider store={store}><App /></Provider>;`,
-}: Props) {
+}: DialogReduxProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

@@ -10,8 +10,9 @@ import PrimarySearchAppBar from "../../../components/AppBar";
 import { DialogExcluir } from '../../../components/Dialog/DialogExcluir';
 import { DialogDetalhes } from '../components/DialogDetalhes/DialogDetalhes';
 import { useTranslation } from "react-i18next";
+import type { FC } from 'react';
 
-export default function FrutasPage() {
+export const FrutasPage: FC = () => {
   const { t } = useTranslation();
   const { frutas = [], adicionarFruta, atualizarFruta, removerFruta } = useFrutas();
   const [searchTerm, setSearchTerm] = useState('');
@@ -195,3 +196,5 @@ export default function FrutasPage() {
     </Box>
   );
 }
+
+export default FrutasPage;

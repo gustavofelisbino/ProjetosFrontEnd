@@ -3,8 +3,9 @@ import ErrorIcon from '@mui/icons-material/ErrorOutline';
 import { alpha } from '@mui/material/styles';
 import type { Fruta } from '../../components/Tabela';
 import { useTranslation } from 'react-i18next';
+import type { FC } from 'react';
 
-export const DialogExcluir = ({ open, onClose, onConfirm, fruta }: { open: boolean; onClose: () => void; onConfirm: () => void; fruta: Fruta }) => {
+export const DialogExcluir: FC<{ open: boolean; onClose: () => void; onConfirm: () => void; fruta: Fruta }> = ({ open, onClose, onConfirm, fruta }) => {
     const { t } = useTranslation();
     return (
         <Dialog open={open} onClose={onClose} maxWidth="xs" fullWidth sx={{ fontFamily: 'Roboto, Arial, sans-serif' }}>
@@ -25,3 +26,5 @@ export const DialogExcluir = ({ open, onClose, onConfirm, fruta }: { open: boole
         </Dialog>
     );
 };
+
+export default DialogExcluir;

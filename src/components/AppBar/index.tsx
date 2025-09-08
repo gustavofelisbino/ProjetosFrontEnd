@@ -33,6 +33,7 @@ import AvatarHeaderInicio from "./AvatarHeader";
 import CustomIconButtonHeaderInicio from "./CustomIconButtonHeaderInicio";
 import SidebarUnderHeader from "./SidebarUnderHeader";
 import { useState } from "react";
+import type { FC } from 'react';
 
 const Search = styled("div")(({ theme }) => ({
   position: "relative",
@@ -80,7 +81,7 @@ interface PrimarySearchAppBarProps extends MuiAppBarProps {
   searchValue?: string;
 }
 
-export default function PrimarySearchAppBar({ color = 'primary', title, onSearchChange, searchValue, ...props }: PrimarySearchAppBarProps) {
+export const PrimarySearchAppBar: FC<PrimarySearchAppBarProps> = ({ color = 'primary', title, onSearchChange, searchValue, ...props }: PrimarySearchAppBarProps) => {
   const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const [searchQuery, setSearchQuery] = useState(searchValue || '');
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -259,3 +260,5 @@ export default function PrimarySearchAppBar({ color = 'primary', title, onSearch
     </ThemeProvider>
   );
 }
+
+export default PrimarySearchAppBar;

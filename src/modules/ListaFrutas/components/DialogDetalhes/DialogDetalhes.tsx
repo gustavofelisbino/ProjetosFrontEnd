@@ -18,6 +18,7 @@ import { formatCurrency } from "../../../../utils/formatCurrency";
 import { formatDate } from "../../../../utils/formatDate";
 import theme from "../../../../themes";
 import { useTranslation } from "react-i18next";
+import type { FC } from "react";
 
 interface IDetalhes {
     open: boolean;
@@ -25,7 +26,7 @@ interface IDetalhes {
     fruta?: Fruta;
 }
 
-export const DialogDetalhes = ({ open, onClose, fruta }: IDetalhes) => {
+export const DialogDetalhes: FC<IDetalhes> = ({ open, onClose, fruta }) => {
     const { t } = useTranslation();
     if (!fruta) return null;
 

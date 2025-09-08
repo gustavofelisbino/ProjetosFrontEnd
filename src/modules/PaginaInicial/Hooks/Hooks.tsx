@@ -7,15 +7,16 @@ import {
   CardContent,
 } from "@mui/material";
 import { theme } from "../../../themes";
-import DialogUseState from "./Dialogs/UseState";
-import DialogUseEffect from "./Dialogs/UseEffect";
-import DialogUseContext from "./Dialogs/UseContext";
-import DialogUseMemo from "./Dialogs/UseMemo";
-import DialogUseRef from "./Dialogs/UseRef";
-import DialogUseReducer from "./Dialogs/UseReducer";
-import DialogUseCallback from "./Dialogs/UseCallback";
+import { DialogUseState } from "./Dialogs/UseState";
+import { DialogUseEffect } from "./Dialogs/UseEffect";
+import { DialogUseContext } from "./Dialogs/UseContext";
+import { DialogUseMemo } from "./Dialogs/UseMemo";
+import { DialogUseRef } from "./Dialogs/UseRef";
+import { DialogUseReducer } from "./Dialogs/UseReducer";
+import { DialogUseCallback } from "./Dialogs/UseCallback";
+import type { FC } from 'react';
 
-export default function Hooks() {
+export const Hooks: FC = () => {
   return (
 <Stack spacing={3} sx={{ maxWidth: 1000, mx: "auto", p: 2, mt: 2, display: "flex" }}>
  <Typography 

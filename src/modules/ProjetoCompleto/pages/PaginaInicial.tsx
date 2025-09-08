@@ -14,7 +14,7 @@ import { useNavigate } from 'react-router-dom';
 
 const initialState = { count: 0 };
 
-export const ProjetoCompleto: FC = () => {
+export const ProjetoCompletoPage: FC = () => {
     const { t } = useTranslation();
     const { frutas } = useFrutas();
     const [frutaAtual, setFrutaAtual] = useState(frutas[0]);
@@ -113,4 +113,4 @@ export const ProjetoCompleto: FC = () => {
   );
 };
 
-export default ProjetoCompleto;
+export default ProjetoCompletoPage;

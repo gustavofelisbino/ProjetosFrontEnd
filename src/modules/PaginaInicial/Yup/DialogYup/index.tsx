@@ -7,8 +7,9 @@ import {
 import * as yup from "yup";
 import { Controller, useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
+import type { FC } from 'react';
 
-type Props = {
+type DialogYupProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
@@ -24,11 +25,11 @@ const YupExemplo = yup.object({
     .required("O email é obrigatório")
 }) 
 
-export default function DialogYup({
+export const DialogYup: FC<DialogYupProps> = ({
   renderTrigger,
   title = "Yup",
   desc = "O Yup adiciona validação de dados.",
-}: Props) {
+}: DialogYupProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

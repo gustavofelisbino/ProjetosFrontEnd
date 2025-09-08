@@ -1,12 +1,12 @@
-import Hooks from "./Hooks/Hooks";
+import { Hooks } from "./Hooks/Hooks";
 import Header from "../../components/Header/Header";
-import Redux from "./Redux";
-import MaterialUI from "./MaterialUI";
-import I18n from "./I18n";
-import Yup from "./Yup";
-import Axios from "./Axios";
+import { Redux } from "./Redux";
+import { MaterialUI } from "./MaterialUI";
+import { I18n } from "./I18n";
+import { Yup } from "./Yup";
+import { Axios } from "./Axios";
 
-const PaginaInicial: React.FC = () => {
+const PaginaInicialPage: React.FC = () => {
     return (
         <div className="theme-dark">
             <Header />
@@ -20,4 +20,4 @@ const PaginaInicial: React.FC = () => {
     )
 }
 
-export default PaginaInicial
+export default PaginaInicialPage

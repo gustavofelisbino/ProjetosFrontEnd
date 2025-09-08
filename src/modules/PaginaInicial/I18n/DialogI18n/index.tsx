@@ -5,18 +5,19 @@ import {
   Divider
 } from "@mui/material";
 import { useTranslation } from "react-i18next";
+import type { FC } from 'react';
 
-type Props = {
+type DialogI18nProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
 };
 
-export default function DialogI18n({
+export const DialogI18n: FC<DialogI18nProps> = ({
   renderTrigger,
   title = "I18n",
   desc = "O I18n adiciona internacionalização a aplicação.",
-}: Props) {
+}: DialogI18nProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

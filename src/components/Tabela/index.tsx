@@ -21,6 +21,7 @@ import { enUS, ptBR } from '@mui/x-data-grid/locales';
 import { useState } from 'react';
 import { useTranslation } from "react-i18next";
 import i18n from "../../i18n";
+import type { FC } from 'react';
 
 export interface Fruta {
   id: number;
@@ -38,7 +39,7 @@ interface FrutasTableProps {
   onDetails: (id: number) => void;
 }
 
-export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: FrutasTableProps) {
+export const FrutasTable: FC<FrutasTableProps> = ({ frutas, onEdit, onDelete, onDetails }) => {
   const { t } = useTranslation();
   const [paginationModel, setPaginationModel] = useState({
     pageSize: 5,
@@ -305,3 +306,5 @@ export default function FrutasTable({ frutas, onEdit, onDelete, onDetails }: Fru
 
   return tableContent;
 }
+
+export default FrutasTable;

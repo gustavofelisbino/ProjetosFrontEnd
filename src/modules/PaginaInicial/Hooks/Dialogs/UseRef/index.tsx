@@ -3,21 +3,22 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseRefProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseRef({
+export const DialogUseRef: FC<DialogUseRefProps> = ({
   renderTrigger,
   title = "useRef",
   desc = "useRef guarda um valor mutável ou referência de elemento sem causar re-render no componente.",
   code = `const ref = useRef(initialValue);
 return <button onClick={() => ref.current.value++}>{ref.current.value}</button>;`,
-}: Props) {
+}: DialogUseRefProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

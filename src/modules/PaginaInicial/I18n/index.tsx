@@ -1,8 +1,9 @@
 import { Box, Button, Card, CardContent, Typography } from "@mui/material";
-import DialogI18n from "./DialogI18n";
+import { DialogI18n } from "./DialogI18n";
 import { theme } from "../../../themes";
+import type { FC } from 'react';
 
-export default function I18n() {
+export const I18n: FC = () => {
     return (
         <>
         <Box sx={{ maxWidth: 800, mx: "auto", p: 2 }}>

@@ -3,22 +3,23 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseEffectProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseEffect({
+export const DialogUseEffect: FC<DialogUseEffectProps> = ({
   renderTrigger,
   title = "useEffect",
   desc = "useEffect serve para executar algo quando o componente monta, atualiza ou desmonta. Como por exemplo, buscar dados de uma API, atualizar o título da página ou limpar um timer.",
   code = `useEffect(() => {
     console.log("useEffect");
   }, []);`,
-}: Props) {
+}: DialogUseEffectProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

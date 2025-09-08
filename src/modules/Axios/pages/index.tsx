@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, type FC } from 'react';
 import {
   Box, Button, Card, CardContent, Dialog, DialogTitle,
   DialogContent, Typography, Divider, CircularProgress
@@ -47,7 +47,7 @@ type FormData = {
   descricao?: string;
 };
 
-export default function FrutasPage() {
+export const AxiosPage: FC = () => {
   const { t } = useTranslation();
 
   const [frutas, setFrutas] = useState<TableFruta[]>([]);
@@ -229,3 +229,6 @@ export default function FrutasPage() {
     </Box>
   );
 }
+
+export default AxiosPage;
+

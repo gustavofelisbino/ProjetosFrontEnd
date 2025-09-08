@@ -3,20 +3,21 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseMemoProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseMemo({
+export const DialogUseMemo: FC<DialogUseMemoProps> = ({
   renderTrigger,
   title = "useMemo",
   desc = "useMemo memoriza um valor calculado para evitar refazer contas pesadas toda vez que o componente renderiza.",
   code = `const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b]);`,
-}: Props) {
+}: DialogUseMemoProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

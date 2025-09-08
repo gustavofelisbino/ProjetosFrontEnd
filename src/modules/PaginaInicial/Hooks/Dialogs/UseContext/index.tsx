@@ -3,21 +3,22 @@ import {
   Dialog, DialogTitle, DialogContent, DialogActions,
   Button, Typography, Box
 } from "@mui/material";
+import type { FC } from 'react';
 
-type Props = {
+type DialogUseContextProps = {
   renderTrigger?: (open: () => void) => React.ReactNode;
   title?: string;
   desc?: string;
   code?: string;
 };
 
-export default function DialogUseContext({
+export const DialogUseContext: FC<DialogUseContextProps> = ({
   renderTrigger,
   title = "useContext",
   desc = "useContext permite compartilhar dados entre componentes sem precisar repassar props em cada nível da árvore.",
   code = `const context = useContext(MyContext);
 return <div>{context.value}</div>;`,
-}: Props) {
+}: DialogUseContextProps) => {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);

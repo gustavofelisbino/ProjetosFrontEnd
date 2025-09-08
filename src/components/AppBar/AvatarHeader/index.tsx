@@ -1,5 +1,6 @@
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import type { FC } from 'react';
 
 interface AvatarHeaderInicioProps {
   userIcon: any;
@@ -7,7 +8,7 @@ interface AvatarHeaderInicioProps {
   nomeUnidade?: string;
 }
 
-const CustomAvatarHeaderInicio = (props: AvatarHeaderInicioProps) => {
+export const CustomAvatarHeaderInicio: FC<AvatarHeaderInicioProps> = (props: AvatarHeaderInicioProps) => {
   const { userIcon, nomeUsuario = "Usuário", nomeUnidade = "Unidade" } = props;
   return (
     <Button color="inherit" sx={{ textTransform: "none" }}>
