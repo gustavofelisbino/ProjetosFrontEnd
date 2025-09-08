@@ -1,7 +1,7 @@
 import { DataGrid } from '@mui/x-data-grid';
 import type { GridColDef } from '@mui/x-data-grid';
 import { Box, Button } from '@mui/material';
-import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
+import { Edit as EditIcon, Delete as DeleteIcon, ZoomIn } from '@mui/icons-material';
 import type { FC } from 'react';
 import { useTranslation } from 'react-i18next';
 
@@ -15,12 +15,13 @@ interface Fruta {
 
 interface FrutaListProps {
   frutas: Fruta[];
+  onDetails: (id: number) => void;
   onEdit: (id: number) => void;
   onDelete: (id: number) => void;
   loading?: boolean;
 }
 
-export const FrutaList: FC<FrutaListProps> = ({ frutas, onEdit, onDelete, loading = false }) => {
+export const FrutaList: FC<FrutaListProps> = ({ frutas, onEdit, onDelete, onDetails, loading = false }) => {
     const { t } = useTranslation();
     const columns: GridColDef[] = [
     { 
@@ -54,6 +55,15 @@ export const FrutaList: FC<FrutaListProps> = ({ frutas, onEdit, onDelete, loadin
       width: 300,
       renderCell: (params) => (
         <Box sx={{ display: 'flex', gap: 1, justifyContent: 'flex-end', width: '100%' }}>
+          <Button
+            variant="contained"
+            size="small"
+            startIcon={<ZoomIn />}
+            onClick={() => onDetails(params.row.id)}
+            sx={{ fontFamily: 'Roboto' }}
+          >
+            {t('detalhes')}
+          </Button>
           <Button
             variant="contained"
             size="small"

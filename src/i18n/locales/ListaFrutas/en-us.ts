@@ -37,4 +37,5 @@ export const enUS = {
     "dataVencimento": "Expiry Date",
     "fruta": "Fruit",
     "temcertezaque": "Are you sure you want to delete the fruit: ",
+    "detalhes": "Details"
 };

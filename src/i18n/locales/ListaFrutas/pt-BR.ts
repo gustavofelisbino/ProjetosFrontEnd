@@ -36,4 +36,5 @@ export const ptBR = {
     "dataVencimento": "Data de Vencimento",
     "fruta": "Fruta",
     "temcertezaque": "Tem certeza que deseja excluir a fruta: ",
+    "detalhes": "Detalhes"
 };

@@ -10,16 +10,18 @@ import { contadorReducer } from '../types';
 import type { FC } from 'react';
 import PrimarySearchAppBar from '../../../components/AppBar';
 import { useTranslation } from 'react-i18next';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = { count: 0 };
 
-export const PaginaInicial: FC = () => {
+export const ProjetoCompleto: FC = () => {
     const { t } = useTranslation();
     const { frutas } = useFrutas();
     const [frutaAtual, setFrutaAtual] = useState(frutas[0]);
     const [mostrarCarrinho, setMostrarCarrinho] = useState(false);
     const [state, dispatch] = useReducer(contadorReducer, initialState);
     const { limparCarrinho } = useCarrinho();
+    const navigate = useNavigate();
 
   useEffect(() => {
     if (frutas.length > 0 && !frutaAtual) {
@@ -104,10 +106,11 @@ export const PaginaInicial: FC = () => {
             </Button>
           </Box>
         )}
+        <Button variant="contained" onClick={() => navigate('/')}>Voltar</Button>
       </Paper>
     </Box>
     </>
   );
 };
 
-export default PaginaInicial;
+export default ProjetoCompleto;

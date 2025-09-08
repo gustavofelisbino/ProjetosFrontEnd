@@ -1,5 +1,8 @@
 import { useState, useEffect } from 'react';
-import { Box, Button, Card, CardContent, Dialog, DialogTitle, DialogContent, Typography } from "@mui/material";
+import {
+  Box, Button, Card, CardContent, Dialog, DialogTitle,
+  DialogContent, Typography, Divider, CircularProgress
+} from "@mui/material";
 import { Add as AddIcon, Numbers as NumberIcon } from '@mui/icons-material';
 import { alpha } from "@mui/material/styles";
 import FrutasTable from '../../../components/Tabela';
@@ -9,8 +12,13 @@ import { FrutaForm } from '../../../modules/ListaFrutas/components/FrutaForm';
 import theme from "../../../themes";
 import { useTranslation } from "react-i18next";
 
-import { getFrutas, addFruta, updateFruta, deleteFruta } from '../../../api/frutas';
-import type { Fruta as ApiFruta } from '../../../api/frutas';
+import {
+  getFrutas,
+  createFruta,
+  updateFruta,
+  deleteFruta,
+  type Fruta as ApiFruta
+} from '../../../api/frutas';
 import type { Fruta as TableFruta } from '../../../components/Tabela';
 
 const toTableFruta = (fruta: ApiFruta): TableFruta => ({
@@ -18,7 +26,7 @@ const toTableFruta = (fruta: ApiFruta): TableFruta => ({
   fruta: fruta.fruta,
   valor: Number(fruta.valor),
   dataVencimento: new Date(fruta.dataVencimento),
-  status: fruta.status || 'Ativo',
+  status: (fruta.status === 'Ativo' || fruta.status === 'Inativo' ? fruta.status : 'Ativo') as 'Ativo' | 'Inativo',
   descricao: fruta.descricao || ''
 });
 
@@ -43,17 +51,26 @@ export default function FrutasPage() {
   const { t } = useTranslation();
 
   const [frutas, setFrutas] = useState<TableFruta[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState<string | null>(null);
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingFruta, setEditingFruta] = useState<TableFruta | null>(null);
+
   const [dialogExcluirOpen, setDialogExcluirOpen] = useState(false);
   const [selectedFruta, setSelectedFruta] = useState<TableFruta | null>(null);
 
   const loadFrutas = async () => {
     try {
+      setLoading(true);
+      setErrorMsg(null);
       const data = await getFrutas();
       setFrutas(data.map(toTableFruta));
-    } catch (error) {
+    } catch (error: any) {
+      setErrorMsg(error?.message || 'Falha ao carregar frutas');
       console.error('Error loading frutas:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -65,22 +82,22 @@ export default function FrutasPage() {
     try {
       const frutaData: Omit<TableFruta, 'id'> = {
         fruta: formData.fruta,
-        valor: parseFloat(formData.valor.replace(',', '.')),
-        dataVencimento: formData.dataVencimento ? new Date(formData.dataVencimento) : new Date(),
+        valor: parseFloat((formData.valor ?? '0').replace(',', '.')),
+        dataVencimento: formData.dataVencimento
+          ? new Date(formData.dataVencimento)
+          : new Date(),
         status: formData.status || 'Ativo',
         descricao: formData.descricao || ''
       };
 
       if (editingFruta) {
         const apiFruta = toApiFruta({ ...frutaData, id: editingFruta.id });
-        await updateFruta(editingFruta.id, apiFruta);
-        setFrutas(prev =>
-          prev.map(f => f.id === editingFruta.id ? toTableFruta(apiFruta) : f)
-        );
+        const updated = await updateFruta(editingFruta.id, apiFruta);
+        setFrutas(prev => prev.map(f => f.id === editingFruta.id ? toTableFruta(updated) : f));
       } else {
         const apiFruta = toApiFruta(frutaData);
-        const newFruta = await addFruta(apiFruta);
-        setFrutas(prev => [...prev, toTableFruta(newFruta)]);
+        const created = await createFruta(apiFruta);
+        setFrutas(prev => [...prev, toTableFruta(created)]);
       }
 
       setIsFormOpen(false);
@@ -93,11 +110,7 @@ export default function FrutasPage() {
   const handleEditClick = (id: number) => {
     const fruta = frutas.find(f => f.id === id);
     if (fruta) {
-      setEditingFruta({
-        ...fruta,
-        valor: fruta.valor,
-        dataVencimento: fruta.dataVencimento
-      });
+      setEditingFruta(fruta);
       setIsFormOpen(true);
     }
   };
@@ -111,25 +124,27 @@ export default function FrutasPage() {
   };
 
   const handleConfirmDelete = async () => {
-    if (selectedFruta) {
-      try {
-        await deleteFruta(selectedFruta.id!);
-        setFrutas(prev => prev.filter(f => f.id !== selectedFruta.id));
-      } catch (error) {
-        console.error('Error deleting fruta:', error);
-      } finally {
-        setDialogExcluirOpen(false);
-        setSelectedFruta(null);
-      }
+    if (!selectedFruta) return;
+    try {
+      await deleteFruta(selectedFruta.id!);
+      setFrutas(prev => prev.filter(f => f.id !== selectedFruta.id));
+    } catch (error) {
+      console.error('Error deleting fruta:', error);
+    } finally {
+      setDialogExcluirOpen(false);
+      setSelectedFruta(null);
     }
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <PrimarySearchAppBar />
+
       <Box sx={{ width: '80%', margin: 'auto', marginTop: '60px' }}>
         <Box sx={{ display: 'flex', mb: 3, alignItems: 'center', justifyContent: 'space-between' }}>
-          <Typography variant="h4" fontWeight="bold" color="#616161">{t('listaDeFrutas')}</Typography>
+          <Typography variant="h4" fontWeight="bold" color="#616161">
+            {t('listaDeFrutas')}
+          </Typography>
           <Button
             variant="contained"
             startIcon={<AddIcon />}
@@ -145,11 +160,13 @@ export default function FrutasPage() {
         <Box sx={{ display: 'flex', gap: 2, mb: 2 }}>
           <Card sx={{ width: '30%' }}>
             <CardContent sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <NumberIcon sx={{ 
-                padding: 1, fontSize: 32, color: '#616161',
-                backgroundColor: alpha(theme.palette.primary.dark, 0.3),
-                borderRadius: 2
-              }} />
+              <NumberIcon
+                sx={{
+                  padding: 1, fontSize: 32, color: '#616161',
+                  backgroundColor: alpha(theme.palette.primary.dark, 0.3),
+                  borderRadius: 2
+                }}
+              />
               <Box>
                 <Typography variant="h6" color="textSecondary">{t('totalDeFrutas')}</Typography>
                 <Typography variant="h5">{frutas.length}</Typography>
@@ -157,6 +174,17 @@ export default function FrutasPage() {
             </CardContent>
           </Card>
         </Box>
+
+        {loading && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+            <CircularProgress size={18} /><Typography variant="body2">Carregando…</Typography>
+          </Box>
+        )}
+        {errorMsg && (
+          <Typography variant="body2" color="error" sx={{ mb: 2 }}>
+            {errorMsg}
+          </Typography>
+        )}
 
         <FrutasTable
           frutas={frutas}
@@ -170,10 +198,7 @@ export default function FrutasPage() {
           <DialogContent>
             <FrutaForm
               open={isFormOpen || !!editingFruta}
-              onClose={() => { 
-                setIsFormOpen(false); 
-                setEditingFruta(null); 
-              }}
+              onClose={() => { setIsFormOpen(false); setEditingFruta(null); }}
               onSubmit={handleSubmit}
               title={editingFruta ? t('editarFruta') : t('adicionarFruta')}
               initialData={
@@ -200,6 +225,7 @@ export default function FrutasPage() {
           />
         )}
       </Box>
+      <Divider sx={{ mt: 2 }} />
     </Box>
   );
 }

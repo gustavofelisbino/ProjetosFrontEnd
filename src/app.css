@@ -1,0 +1,7 @@
+.theme-dark {
+  min-height: 100vh;
+  background: #0d0817;
+  color: white;
+  overflow-x: hidden;
+  position: relative;
+}

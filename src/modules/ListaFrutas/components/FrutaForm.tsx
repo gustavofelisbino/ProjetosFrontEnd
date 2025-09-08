@@ -1,7 +1,7 @@
 import { 
   Dialog, DialogTitle, DialogContent, DialogActions, 
   Button, TextField, Box, InputAdornment, Paper, 
-  FormControl, InputLabel, Select, MenuItem, FormHelperText,
+  FormControl, Select, MenuItem, FormHelperText,
   Card, CardContent 
 } from "@mui/material";
 import { useForm, Controller } from 'react-hook-form';
@@ -31,6 +31,13 @@ const frutaSchema = yup.object({
       if (!value) return false;
       const numericValue = parseFloat(value.replace(/\./g, '').replace(',', '.'));
       return !isNaN(numericValue) && numericValue > 0;
+    }),
+    dataVencimento: yup.string()
+    .required('A data de vencimento é obrigatória')
+    .test('data-valida', 'Data inválida', (value) => {
+      if (!value) return false;
+      const date = new Date(value);
+      return !isNaN(date.getTime());
     }),
   status: yup.mixed<'Ativo' | 'Inativo'>()
     .oneOf(['Ativo', 'Inativo'] as const, 'Status inválido')
@@ -110,10 +117,10 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
         </DialogTitle>
         
         <DialogContent>
-          <Card sx={{ p: 0 }}>
+          <Card sx={{ p: 1 }}>
             <CardContent>
               <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, minWidth: '400px', mb: 2 }}>
-                <Box sx={{ display: 'flex', gap: 2 }}>
+                <Box sx={{ display: 'flex', gap: 3, width: '100%' }}>
                   <Controller
                     name="fruta"
                     control={control}
@@ -125,6 +132,7 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
                         margin="normal"
                         error={!!errors.fruta}
                         helperText={errors.fruta?.message}
+                        variant="standard"
                       />
                     )}
                   />
@@ -135,10 +143,13 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
                       <TextField
                         {...field}
                         type="date"
+                        variant="standard"
                         label={t('dataDeVencimento')}
                         margin="normal"
                         InputLabelProps={{ shrink: true }}
                         fullWidth
+                        error={!!errors.dataVencimento}
+                        helperText={errors.dataVencimento?.message}
                       />
                     )}
                   />
@@ -156,6 +167,7 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
                     label={t('valor')}
                     placeholder="0,00"
                     fullWidth
+                    variant="standard"
                     error={!!errors.valor}
                     helperText={errors.valor?.message}
                     InputProps={{
@@ -171,12 +183,13 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
                 control={control}
                 render={({ field }) => (
                   <FormControl fullWidth margin="normal" error={!!errors.status}>
-                    <InputLabel>{t('status')}</InputLabel>
                     <Select
                       {...field}
                       label={t('status')}
+                      variant="standard"
                       value={field.value || 'Ativo'}
                       onChange={(e) => field.onChange(e.target.value as 'Ativo' | 'Inativo')}
+                      sx={{ mt: 2 }}
                     >
                       <MenuItem value="Ativo">{t('disponivel')}</MenuItem>
                       <MenuItem value="Inativo">{t('indisponivel')}</MenuItem>
@@ -197,6 +210,7 @@ export const FrutaForm: FC<FrutaFormProps> = ({ open, onClose, onSubmit, initial
                     label={t('descricao')}
                     margin="normal"
                     fullWidth
+                    variant="standard"
                     error={!!errors.descricao}
                     helperText={errors.descricao?.message}
                   />

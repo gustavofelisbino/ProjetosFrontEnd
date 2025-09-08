@@ -44,7 +44,7 @@ const SidebarUnderHeader: React.FC<SidebarUnderHeaderProps> = ({
           text="Inicio"
           onClick={() => {
             handleSelect("Inicio");
-            navigate("/");
+            navigate("/projeto-completo");
           }}
           selected={selected === "Inicio"}
           highlightColor="#9C27B0"
